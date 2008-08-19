@@ -1,14 +1,12 @@
 Complex Form Examples
 ---------------------
 
-This example uses the modifications made by David Dollar found at this thread:
-http://github.com/ddollar/rails/tree/accessible-association-replacement
-
+This example uses the NestedParams and AutosaveAssociation plugins currently in development by Fingertips.
+No url yet.
 
 Rails is vendored using a Git submodule to this repository:
 http://github.com/ddollar/rails/tree/accessible-association-replacement
 
-
-Currently there are a couple issues:
+Currently there are a couple issues with the "accessible" version:
 - an exception is raised when validation fails for task
 - tasks are updated even if validation fails for project
