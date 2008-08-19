@@ -49,6 +49,9 @@ body {
 .fieldWithErrors {
   display: inline;
 }
+.fieldWithErrors input {
+  border: 1px solid red;
+}
 
 #errorExplanation {
   width: 400px;

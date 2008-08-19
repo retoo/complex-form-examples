@@ -1,3 +1,5 @@
+load 'nested_params_form_builder.rb'
+
 class ProjectsController < ApplicationController
   def index
     @projects = Project.find(:all)
@@ -24,10 +26,11 @@ class ProjectsController < ApplicationController
   
   def edit
     @project = Project.find(params[:id])
+    # add an extra new record for debugging purposes
+    @project.tasks.build
   end
   
   def update
-    #params[:project][:tasks] ||= []
     @project = Project.find(params[:id])
     if @project.update_attributes(params[:project])
       flash[:notice] = "Successfully updated project."

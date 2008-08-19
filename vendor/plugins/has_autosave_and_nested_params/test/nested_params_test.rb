@@ -63,6 +63,22 @@ describe "NestedParams, on a has_many association" do
     @visitor.reload
     @visitor.artists.map(&:name).sort.should == %w{ jack joe }
   end
+  
+  it "should update existing records and add new ones that have an id that start with the string 'new_'" do
+    before = Artist.count
+    
+    @visitor.update_attributes({
+      :artists => {
+        @artist1.id.to_s => { :name => 'joe' },
+        "new_12345" => { :name => 'jill' },
+        @artist2.id.to_s => { :name => 'jack' }
+      }
+    })
+    @visitor.reload
+    
+    Artist.count.should.be before + 1
+    @visitor.artists.map(&:name).sort.should == %w{ jack jill joe }
+  end
 end
 
 describe "NestedParams, on a has_one association" do

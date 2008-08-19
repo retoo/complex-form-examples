@@ -50,13 +50,18 @@ module NestedParams
     class_eval do
       define_method("#{attr}_with_nested_params=") do |value|
         if value.is_a? Hash
-          # For existing records
+          # For existing records and new records that are marked by an id that starts with 'new_'
           value.each do |id, attributes|
-            send(attr).detect { |x| x.id == id.to_i }.attributes = attributes
+            if id.starts_with? 'new_'
+              send(attr).build attributes
+            else
+              # Find the record for this id and assign the attributes
+              send(attr).detect { |x| x.id == id.to_i }.attributes = attributes
+            end
           end
         else
           if value.is_a?(Array) && value.all? { |x| x.is_a?(Hash) }
-            # For new records
+            # For an array full of new record hashes
             value.each do |attributes|
               send(attr).build attributes
             end
