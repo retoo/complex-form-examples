@@ -1,0 +1,82 @@
+8
+
+dir
+430
+https://fngtps.com/svn/aac/trunk/vendor/plugins/has_autosave_and_nested_params
+https://fngtps.com/svn/aac
+
+
+
+2008-08-18T10:56:08.309364Z
+404
+eloy
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e28ea3b4-8fe9-4f9d-8917-340b98aa425c
+
+test
+dir
+
+Rakefile
+file
+
+
+
+
+2008-08-19T18:21:14.000000Z
+9dd09af4763b946ff71a633d143b14b6
+2008-08-16T12:03:36.591417Z
+402
+eloy
+
+TODO
+file
+
+
+
+
+2008-08-19T18:21:14.000000Z
+ddb74bdb4b65d5a1b0f5018776717134
+2008-08-18T10:56:08.309364Z
+404
+eloy
+
+lib
+dir
+
+MIT-LICENSE
+file
+
+
+
+
+2008-08-19T18:21:14.000000Z
+e28f35a0e99fcc29c0f8f9f79b1df7f5
+2008-08-16T12:03:36.591417Z
+402
+eloy
+
+README
+file
+
+
+
+
+2008-08-19T18:21:14.000000Z
+624d5f006d413ae5700d4f55931238cb
+2008-08-16T12:03:36.591417Z
+402
+eloy
+

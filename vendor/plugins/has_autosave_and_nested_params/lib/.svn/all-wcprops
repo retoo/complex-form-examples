@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/aac/!svn/ver/404/trunk/vendor/plugins/has_autosave_and_nested_params/lib
+END
+autosave_association.rb
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/aac/!svn/ver/404/trunk/vendor/plugins/has_autosave_and_nested_params/lib/autosave_association.rb
+END
+nested_params.rb
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/aac/!svn/ver/402/trunk/vendor/plugins/has_autosave_and_nested_params/lib/nested_params.rb
+END

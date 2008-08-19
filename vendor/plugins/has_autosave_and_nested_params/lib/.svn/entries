@@ -1,0 +1,52 @@
+8
+
+dir
+430
+https://fngtps.com/svn/aac/trunk/vendor/plugins/has_autosave_and_nested_params/lib
+https://fngtps.com/svn/aac
+
+
+
+2008-08-18T10:56:08.309364Z
+404
+eloy
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e28ea3b4-8fe9-4f9d-8917-340b98aa425c
+
+autosave_association.rb
+file
+
+
+
+
+2008-08-19T18:21:14.000000Z
+f64d7ba35cd895d83c52731210a1b269
+2008-08-18T10:56:08.309364Z
+404
+eloy
+
+nested_params.rb
+file
+
+
+
+
+2008-08-19T18:21:14.000000Z
+4766b79eff8cf9a597b0f385d1766321
+2008-08-16T12:03:36.591417Z
+402
+eloy
+

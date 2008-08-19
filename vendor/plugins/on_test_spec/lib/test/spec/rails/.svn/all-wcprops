@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/rails-plugins/!svn/ver/47/trunk/on_test_spec/lib/test/spec/rails
+END
+response_helpers.rb
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/rails-plugins/!svn/ver/28/trunk/on_test_spec/lib/test/spec/rails/response_helpers.rb
+END
+controller_helpers.rb
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/rails-plugins/!svn/ver/28/trunk/on_test_spec/lib/test/spec/rails/controller_helpers.rb
+END
+expectations.rb
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/rails-plugins/!svn/ver/47/trunk/on_test_spec/lib/test/spec/rails/expectations.rb
+END
+test_spec_ext.rb
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/rails-plugins/!svn/ver/28/trunk/on_test_spec/lib/test/spec/rails/test_spec_ext.rb
+END
+request_helpers.rb
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/rails-plugins/!svn/ver/28/trunk/on_test_spec/lib/test/spec/rails/request_helpers.rb
+END
+spec_responder.rb
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/rails-plugins/!svn/ver/28/trunk/on_test_spec/lib/test/spec/rails/spec_responder.rb
+END
