@@ -35,7 +35,7 @@ describe "NestedParams, on a has_many association" do
     @visitor.artists.map(&:name).sort.should == %w{ jack joe }
   end
   
-  it "should take a hash with fixnum keys and assign the attributes to the associated models" do
+  it "should take a hash with integer keys and assign the attributes to the associated models" do
     @visitor.attributes = @valid_alt_params
     @visitor.artists.map(&:name).sort.should == %w{ jack joe }
   end

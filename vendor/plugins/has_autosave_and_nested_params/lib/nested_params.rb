@@ -55,19 +55,17 @@ module NestedParams
     class_eval do
       define_method("#{attr}_with_nested_params=") do |value|
         if value.is_a? Hash
-          value.stringify_keys!
-          
           if destroy_missing
             association = send(attr)
             # Get all ids and subtract the ones we received, detroy the remainder
-            keys = value.keys
+            keys = value.keys.map { |key| key.to_s }
             association.reject { |x| keys.include? x.id.to_s }.each { |record| record.destroy }
           end
           
           # For existing records and new records that are marked by an id that starts with 'new_'
           value.each do |id, attributes|
             association ||= send(attr)
-            if id.starts_with? 'new_'
+            if id.is_a?(String) && id.starts_with?('new_')
               association.build attributes
             else
               # Find the record for this id and assign the attributes
