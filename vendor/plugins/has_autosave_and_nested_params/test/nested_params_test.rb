@@ -19,7 +19,7 @@ describe "NestedParams, on a has_many association" do
   after do
     teardown_db
     Visitor.class_eval do
-      has_many :artists, :nested_params => true, :destroy_missing => true
+      has_many :artists, :nested_params => true, :destroy_missing => true, :reject_empty => true
     end
   end
   
@@ -74,6 +74,16 @@ describe "NestedParams, on a has_many association" do
     @visitor.reload
     
     @visitor.artists.map(&:name).sort.should == %w{ jack jill joe }
+  end
+  
+  it "should automatically reject any new record which is empty" do
+    @valid_alt_params[:artists]["new_12345"] = { :name => '' }
+    
+    assert_no_difference("Artist.count") do
+      @visitor.update_attributes @valid_alt_params
+    end
+    
+    @visitor.should.be.valid
   end
   
   it "should automatically destroy a missing record" do

@@ -38,20 +38,21 @@ require File.expand_path('../autosave_association', __FILE__)
 module NestedParams
   def has_many_with_nested_params(*args)
     if (options = args.last).is_a?(Hash)
-      nested_params   = options.delete(:nested_params)
       destroy_missing = options.delete(:destroy_missing)
+      nested_params   = options.delete(:nested_params)
+      reject_empty    = options.delete(:reject_empty)
     end
     
     has_many_without_nested_params(*args)
     
     if nested_params
       attr = args.first
-      define_nested_params_for_has_many_association(attr, destroy_missing)
+      define_nested_params_for_has_many_association(attr, destroy_missing, reject_empty)
       define_autosave_for_has_many_association(attr)
     end
   end
   
-  def define_nested_params_for_has_many_association(attr, destroy_missing = false)
+  def define_nested_params_for_has_many_association(attr, destroy_missing, reject_empty)
     class_eval do
       define_method("#{attr}_with_nested_params=") do |value|
         if value.is_a? Hash
@@ -66,6 +67,7 @@ module NestedParams
           value.each do |id, attributes|
             association ||= send(attr)
             if id.is_a?(String) && id.starts_with?('new_')
+              next if reject_empty && attributes.values.all? { |v| v.blank? }
               association.build attributes
             else
               # Find the record for this id and assign the attributes
