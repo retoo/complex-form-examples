@@ -1,54 +1,33 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
-class ProjectsControllerTest < ActionController::TestCase
-  def test_index
-    get :index
-    assert_template 'index'
+describe "On a ProjectsController" do
+  tests ProjectsController
+  
+  before do
+    @project = Project.create(:name => 'NestedParams')
+    @project.tasks.create(:name => 'Check other implementations')
+    @project.tasks.create(:name => 'Try with our plugin')
+    @tasks = @project.tasks
+    
+    @valid_update_params = { :name => 'Dinner', :tasks => {
+      @tasks.first.id => { :name => "Buy food" },
+      @tasks.last.id  => { :name => "Cook" }
+    }}
   end
   
-  def test_show
-    get :show, :id => Project.first
-    assert_template 'show'
+  it "should update attributes of the nested tasks" do
+    put :update, :id => @project.id, :project => @valid_update_params
+    @project.reload
+    
+    @project.name.should == 'Dinner'
+    @project.tasks.map(&:name).sort.should == ['Buy food', 'Cook']
   end
   
-  def test_new
-    get :new
-    assert_template 'new'
-  end
-  
-  def test_create_invalid
-    Project.any_instance.stubs(:valid?).returns(false)
-    post :create
-    assert_template 'new'
-  end
-  
-  def test_create_valid
-    Project.any_instance.stubs(:valid?).returns(true)
-    post :create
-    assert_redirected_to project_url(assigns(:project))
-  end
-  
-  def test_edit
-    get :edit, :id => Project.first
-    assert_template 'edit'
-  end
-  
-  def test_update_invalid
-    Project.any_instance.stubs(:valid?).returns(false)
-    put :update, :id => Project.first
-    assert_template 'edit'
-  end
-  
-  def test_update_valid
-    Project.any_instance.stubs(:valid?).returns(true)
-    put :update, :id => Project.first
-    assert_redirected_to project_url(assigns(:project))
-  end
-  
-  def test_destroy
-    project = Project.first
-    delete :destroy, :id => project
-    assert_redirected_to projects_url
-    assert !Project.exists?(project.id)
+  it "should destroy a missing task" do
+    @valid_update_params[:tasks].delete(@tasks.first.id)
+    
+    lambda {
+      put :update, :id => @project.id, :project => @valid_update_params
+    }.should.differ('Task.count', -1)
   end
 end
