@@ -69,5 +69,6 @@ describe "AutosaveAssociation, on a has_many association" do
     
     @visitor.should.not.be.valid
     @visitor.errors.on(:avatars_name).should == "can't be blank"
+    @visitor.errors.on(:avatars).should.be.blank
   end
 end

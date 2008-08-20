@@ -46,7 +46,7 @@ end
 
 class Visitor < ActiveRecord::Base
   extend NestedParams
-  has_many :artists, :nested_params => true, :destroy_missing => true
+  has_many :artists, :nested_params => true, :destroy_missing => true, :reject_empty => true
   
   extend AutosaveAssociation
   has_many :avatars, :autosave => true
