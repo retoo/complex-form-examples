@@ -37,26 +37,40 @@ require File.expand_path('../autosave_association', __FILE__)
 #   Avatar.find(2).name # => 'smiley'
 module NestedParams
   def has_many_with_nested_params(*args)
-    nested_params = args.last.delete(:nested_params) if args.last.is_a?(Hash)
+    if (options = args.last).is_a?(Hash)
+      nested_params   = options.delete(:nested_params)
+      destroy_missing = options.delete(:destroy_missing)
+    end
+    
     has_many_without_nested_params(*args)
+    
     if nested_params
       attr = args.first
-      define_nested_params_for_has_many_association(attr)
+      define_nested_params_for_has_many_association(attr, destroy_missing)
       define_autosave_for_has_many_association(attr)
     end
   end
   
-  def define_nested_params_for_has_many_association(attr)
+  def define_nested_params_for_has_many_association(attr, destroy_missing = false)
     class_eval do
       define_method("#{attr}_with_nested_params=") do |value|
         if value.is_a? Hash
+          if destroy_missing
+            association = send(attr)
+            # Get all ids and subtract the ones we received, detroy the remainder
+            (association.map { |x| x.id } - value.keys.map { |x| x.to_i }).each do |id|
+              association.detect { |x| x.id == id }.destroy
+            end
+          end
+          
           # For existing records and new records that are marked by an id that starts with 'new_'
           value.each do |id, attributes|
+            association ||= send(attr)
             if id.starts_with? 'new_'
-              send(attr).build attributes
+              association.build attributes
             else
               # Find the record for this id and assign the attributes
-              send(attr).detect { |x| x.id == id.to_i }.attributes = attributes
+              association.detect { |x| x.id == id.to_i }.attributes = attributes
             end
           end
         else

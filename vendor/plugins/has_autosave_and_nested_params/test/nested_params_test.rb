@@ -7,10 +7,20 @@ describe "NestedParams, on a has_many association" do
     @visitor = Visitor.create(:email => 'paco@example.com')
     @artist1 = @visitor.artists.create(:name => 'paco')
     @artist2 = @visitor.artists.create(:name => 'poncho')
+    
+    @valid_alt_params = {
+      :artists => {
+        @artist1.id.to_s => { :name => 'joe' },
+        @artist2.id.to_s => { :name => 'jack' }
+      }
+    }
   end
   
   after do
     teardown_db
+    Visitor.class_eval do
+      has_many :artists, :nested_params => true, :destroy_missing => true
+    end
   end
   
   it "should still work as normal" do
@@ -20,23 +30,12 @@ describe "NestedParams, on a has_many association" do
   end
   
   it "should take a hash and assign the attributes to the associated models" do
-    @visitor.attributes = {
-      :artists => {
-        @artist1.id.to_s => { :name => 'joe' },
-        @artist2.id.to_s => { :name => 'jack' }
-      }
-    }
-    
+    @visitor.attributes = @valid_alt_params
     @visitor.artists.map(&:name).sort.should == %w{ jack joe }
   end
   
   it "should automatically enable autosave on the association" do
-    @visitor.attributes = {
-      :artists => {
-        @artist1.id.to_s => { :name => 'joe' },
-        @artist2.id.to_s => { :name => 'jack' }
-      }
-    }
+    @visitor.attributes = @valid_alt_params
     @visitor.save!; @visitor.reload
     
     @visitor.artists.map(&:name).sort.should == %w{ jack joe }
@@ -54,30 +53,71 @@ describe "NestedParams, on a has_many association" do
   end
   
   it "should work with update_attributes as well" do
-    @visitor.update_attributes({
-      :artists => {
-        @artist1.id.to_s => { :name => 'joe' },
-        @artist2.id.to_s => { :name => 'jack' }
-      }
-    })
+    @visitor.update_attributes @valid_alt_params
     @visitor.reload
+    
     @visitor.artists.map(&:name).sort.should == %w{ jack joe }
   end
   
   it "should update existing records and add new ones that have an id that start with the string 'new_'" do
-    before = Artist.count
+    @valid_alt_params[:artists]["new_12345"] = { :name => 'jill' }
     
-    @visitor.update_attributes({
-      :artists => {
-        @artist1.id.to_s => { :name => 'joe' },
-        "new_12345" => { :name => 'jill' },
-        @artist2.id.to_s => { :name => 'jack' }
-      }
-    })
+    assert_difference("Artist.count", +1) do
+      @visitor.update_attributes @valid_alt_params
+    end
     @visitor.reload
     
-    Artist.count.should.be before + 1
     @visitor.artists.map(&:name).sort.should == %w{ jack jill joe }
+  end
+  
+  it "should automatically destroy a missing record" do
+    @valid_alt_params[:artists].delete(@artist1.id.to_s)
+    
+    assert_difference("Artist.count", -1) do
+      @visitor.update_attributes @valid_alt_params
+    end
+  end
+  
+  it "should automatically destroy all missing records" do
+    assert_difference("Artist.count", -2) do
+      @visitor.update_attributes :artists => {}
+    end
+  end
+  
+  it "should create new records and destroy a missing record" do
+    @valid_alt_params[:artists].delete(@artist1.id.to_s)
+    @valid_alt_params[:artists]["new_12345"] = { :name => 'jill' }
+    
+    assert_no_difference("Artist.count") do
+      @visitor.update_attributes @valid_alt_params
+    end
+    @visitor.reload
+    
+    @visitor.artists.map(&:name).sort.should == %w{ jack jill }
+  end
+  
+  it "should not destroy any missing records by default" do
+    Visitor.class_eval do
+      has_many :artists, :nested_params => true
+    end
+    
+    @valid_alt_params[:artists].delete(@artist1.id.to_s)
+    
+    assert_no_difference("Artist.count") do
+      @visitor.update_attributes @valid_alt_params
+    end
+  end
+  
+  it "should not destroy any missing records when turned off" do
+    Visitor.class_eval do
+      has_many :artists, :nested_params => true, :destroy_missing => false
+    end
+    
+    @valid_alt_params[:artists].delete(@artist1.id.to_s)
+    
+    assert_no_difference("Artist.count") do
+      @visitor.update_attributes @valid_alt_params
+    end
   end
 end
 
