@@ -35,6 +35,19 @@ describe "AutosaveAssociation, on a has_one association" do
     @member.should.not.be.valid
     @member.errors.on(:name).should.not.be.blank
   end
+  
+  it "should rollback any changes if an exception occurred while saving" do
+    @member.avatar.name = ''
+    @member.email = ''
+    
+    lambda {
+      @member.save(false).should.be false
+    }.should.not.raise(ActiveRecord::RecordInvalid)
+    
+    @member.reload
+    @member.email.should.not.be.blank
+    @member.avatar.name.should.not.be.blank
+  end
 end
 
 describe "AutosaveAssociation, on a has_many association" do
@@ -70,5 +83,19 @@ describe "AutosaveAssociation, on a has_many association" do
     @visitor.should.not.be.valid
     @visitor.errors.on(:avatars_name).should == "can't be blank"
     @visitor.errors.on(:avatars).should.be.blank
+  end
+  
+  it "should rollback any changes if an exception occurred while saving" do
+    @visitor.avatars.first.name = ''
+    @visitor.email = ''
+    
+    lambda {
+      @visitor.save(false).should.be false
+    }.should.not.raise(ActiveRecord::RecordInvalid)
+    
+    @visitor.reload
+    @visitor.email.should.not.be.blank
+    @visitor.avatars.first.name.should.not.be.blank
+    @visitor.avatars.last.name.should.not.be.blank
   end
 end

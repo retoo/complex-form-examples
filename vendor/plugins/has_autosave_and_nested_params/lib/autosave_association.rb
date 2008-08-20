@@ -94,5 +94,16 @@ module AutosaveAssociation
       alias_method_chain :has_many, :autosave
       alias_method_chain :has_one,  :autosave
     end
+    
+    klass.class_eval do
+      def save_with_autosave(validate = true)
+        self.class.transaction { save! }
+        true
+      rescue ActiveRecord::RecordInvalid
+        false
+      end
+      
+      alias_method_chain :save, :autosave
+    end
   end
 end

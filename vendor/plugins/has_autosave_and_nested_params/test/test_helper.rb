@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'test/spec'
+require 'mocha'
 require 'activerecord'
 require File.expand_path('../../lib/nested_params', __FILE__)
 

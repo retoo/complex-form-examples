@@ -58,7 +58,7 @@ module NestedParams
         if value.is_a? Hash
           if destroy_missing
             association = send(attr)
-            # Get all ids and subtract the ones we received, detroy the remainder
+            # Get all ids and subtract the ones we received, destroy the remainder
             keys = value.keys.map { |key| key.to_s }
             association.reject { |x| keys.include? x.id.to_s }.each { |record| record.destroy }
           end
