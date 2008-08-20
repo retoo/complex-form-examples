@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
     
     extend NestedParams
     
+    # Automatically turns on autosave and thus also validates
     has_many :tasks, :dependent => :destroy, :nested_params => true
     
     validates_presence_of :name

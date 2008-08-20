@@ -62,4 +62,12 @@ describe "AutosaveAssociation, on a has_many association" do
     
     @visitor.avatars.map(&:name).sort.should == %w{ sadly1 sadly2 }
   end
+  
+  it "should automatically validate the associated models" do
+    @visitor.avatars.first.name = ''
+    @visitor.avatars.last.name = ''
+    
+    @visitor.should.not.be.valid
+    @visitor.errors.on(:avatars_name).should == "can't be blank"
+  end
 end

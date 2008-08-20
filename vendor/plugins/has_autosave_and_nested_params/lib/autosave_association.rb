@@ -47,6 +47,18 @@ module AutosaveAssociation
       end
       after_save "autosave_#{attr}"
     end
+    
+    define_method("validate_#{attr}") do
+      send(attr).each do |associated_model|
+        unless associated_model.valid?
+          associated_model.errors.each do |attribute, message|
+            name = "#{attr}_#{attribute}"
+            errors.add(name, message) if errors.on(name).blank?
+          end
+        end
+      end
+    end
+    validate "validate_#{attr}"
   end
   
   def has_one_with_autosave(*args)
