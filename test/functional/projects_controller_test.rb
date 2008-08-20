@@ -47,4 +47,15 @@ describe "On a ProjectsController, when updating" do
       put :update, :id => @project.id, :project => @valid_update_params
     }.should.not.differ('Task.count')
   end
+  
+  it "should not be valid if a task is invalid" do
+    put :update, :id => @project.id, :project => { :name => 'Nothing', :tasks => { @tasks.first.id => { :name => '' }, @tasks.last.id => { :name => '' }}}
+    project = assigns(:project)
+    
+    project.should.not.be.valid
+    project.errors.on(:tasks_name).should == "can't be blank"
+    
+    project.reload
+    project.name.should == 'NestedParams'
+  end
 end
