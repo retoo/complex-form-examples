@@ -1,6 +1,6 @@
 require File.expand_path('../../test_helper', __FILE__)
 
-describe "On a ProjectsController" do
+describe "On a ProjectsController, when updating" do
   tests ProjectsController
   
   before do
@@ -29,5 +29,22 @@ describe "On a ProjectsController" do
     lambda {
       put :update, :id => @project.id, :project => @valid_update_params
     }.should.differ('Task.count', -1)
+  end
+  
+  it "should add a new task" do
+    @valid_update_params[:tasks]['new_12345'] = { :name => 'Take out' }
+    
+    lambda {
+      put :update, :id => @project.id, :project => @valid_update_params
+    }.should.differ('Task.count', +1)
+  end
+  
+  it "should destroy a missing task and add a new one" do
+    @valid_update_params[:tasks].delete(@tasks.first.id)
+    @valid_update_params[:tasks]['new_12345'] = { :name => 'Take out' }
+    
+    lambda {
+      put :update, :id => @project.id, :project => @valid_update_params
+    }.should.not.differ('Task.count')
   end
 end
