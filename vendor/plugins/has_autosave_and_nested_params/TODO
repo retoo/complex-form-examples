@@ -1,2 +1,3 @@
-AutosaveAssociation:
-- Add validation for has_many
+NestedParams:
+- Add an option to the has_many options that indicates wether or not to delete records if they are not included in the array passed to the writer method. The default should be false.
+- Add an option to discard any completely empty hashes in the array passed to the writer method.
