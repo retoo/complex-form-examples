@@ -58,9 +58,8 @@ module NestedParams
           if destroy_missing
             association = send(attr)
             # Get all ids and subtract the ones we received, detroy the remainder
-            (association.map { |x| x.id } - value.keys.map { |x| x.to_i }).each do |id|
-              association.detect { |x| x.id == id }.destroy
-            end
+            keys = value.keys
+            association.reject { |x| keys.include? x.id.to_s }.each { |record| record.destroy }
           end
           
           # For existing records and new records that are marked by an id that starts with 'new_'
