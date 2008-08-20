@@ -7,8 +7,7 @@ class NestedParamsFormBuilder < ActionView::Helpers::FormBuilder
           record = args.first
           # In the case of a new object use a fictive id which is composited with "new_" and the object_id.
           name = "#{object_name}[#{record_or_name_or_array}][#{ record.new_record? ? "new_#{record.object_id}" : record.id}]"
-          # TODO: We also need to pass the options along without the record instance.
-          return @template.fields_for(name, args.first, &block)
+          return @template.fields_for(name, *args, &block)
         end
       end
     end
