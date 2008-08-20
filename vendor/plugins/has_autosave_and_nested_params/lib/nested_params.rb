@@ -55,6 +55,8 @@ module NestedParams
     class_eval do
       define_method("#{attr}_with_nested_params=") do |value|
         if value.is_a? Hash
+          value.stringify_keys!
+          
           if destroy_missing
             association = send(attr)
             # Get all ids and subtract the ones we received, detroy the remainder

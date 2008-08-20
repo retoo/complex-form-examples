@@ -10,8 +10,8 @@ describe "NestedParams, on a has_many association" do
     
     @valid_alt_params = {
       :artists => {
-        @artist1.id.to_s => { :name => 'joe' },
-        @artist2.id.to_s => { :name => 'jack' }
+        @artist1.id => { :name => 'joe' },
+        @artist2.id => { :name => 'jack' }
       }
     }
   end
@@ -29,7 +29,13 @@ describe "NestedParams, on a has_many association" do
     @visitor.artists.should == [@artist1]
   end
   
-  it "should take a hash and assign the attributes to the associated models" do
+  it "should take a hash with string keys and assign the attributes to the associated models" do
+    @valid_alt_params[:artists].stringify_keys!
+    @visitor.attributes = @valid_alt_params
+    @visitor.artists.map(&:name).sort.should == %w{ jack joe }
+  end
+  
+  it "should take a hash with fixnum keys and assign the attributes to the associated models" do
     @visitor.attributes = @valid_alt_params
     @visitor.artists.map(&:name).sort.should == %w{ jack joe }
   end
@@ -71,7 +77,7 @@ describe "NestedParams, on a has_many association" do
   end
   
   it "should automatically destroy a missing record" do
-    @valid_alt_params[:artists].delete(@artist1.id.to_s)
+    @valid_alt_params[:artists].delete(@artist1.id)
     
     assert_difference("Artist.count", -1) do
       @visitor.update_attributes @valid_alt_params
@@ -85,7 +91,7 @@ describe "NestedParams, on a has_many association" do
   end
   
   it "should create new records and destroy a missing record" do
-    @valid_alt_params[:artists].delete(@artist1.id.to_s)
+    @valid_alt_params[:artists].delete(@artist1.id)
     @valid_alt_params[:artists]["new_12345"] = { :name => 'jill' }
     
     assert_no_difference("Artist.count") do
@@ -101,7 +107,7 @@ describe "NestedParams, on a has_many association" do
       has_many :artists, :nested_params => true
     end
     
-    @valid_alt_params[:artists].delete(@artist1.id.to_s)
+    @valid_alt_params[:artists].delete(@artist1.id)
     
     assert_no_difference("Artist.count") do
       @visitor.update_attributes @valid_alt_params
@@ -113,7 +119,7 @@ describe "NestedParams, on a has_many association" do
       has_many :artists, :nested_params => true, :destroy_missing => false
     end
     
-    @valid_alt_params[:artists].delete(@artist1.id.to_s)
+    @valid_alt_params[:artists].delete(@artist1.id)
     
     assert_no_difference("Artist.count") do
       @visitor.update_attributes @valid_alt_params
