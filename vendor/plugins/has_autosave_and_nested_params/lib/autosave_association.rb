@@ -43,7 +43,7 @@ module AutosaveAssociation
   def define_autosave_for_has_many_association(attr)
     class_eval do
       define_method("autosave_#{attr}") do
-        send(attr).each { |x| x.save }
+        send(attr).each { |x| x.save(false) }
       end
       after_save "autosave_#{attr}"
     end
@@ -74,7 +74,7 @@ module AutosaveAssociation
     class_eval do
       define_method("autosave_#{attr}") do
         if associated_model = send(attr)
-          associated_model.save
+          associated_model.save(false)
         end
       end
       after_save "autosave_#{attr}"
@@ -96,10 +96,11 @@ module AutosaveAssociation
     end
     
     klass.class_eval do
-      def save_with_autosave(validate = true)
-        self.class.transaction { save! }
+      def save_with_autosave(run_validations = true)
+        self.class.transaction { run_validations ? save! : save_without_autosave(false) }
         true
-      rescue ActiveRecord::RecordInvalid
+      rescue
+        # TODO: We rescue everything.. Is that ok? Or should we only rescue certain exceptions?
         false
       end
       

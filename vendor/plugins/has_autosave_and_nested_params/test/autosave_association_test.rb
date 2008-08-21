@@ -37,17 +37,39 @@ describe "AutosaveAssociation, on a has_one association" do
   end
   
   it "should rollback any changes if an exception occurred while saving" do
-    @member.avatar.name = ''
-    @member.email = ''
+    @member.avatar.stubs(:save).raises(RuntimeError, 'Error!')
+    
+    @member.avatar.visitor_id = 123
+    @member.address = 'Another address 1'
     
     lambda {
-      @member.save(false).should.be false
-    }.should.not.raise(ActiveRecord::RecordInvalid)
+      @member.save.should.be false
+    }.should.not.raise(Exception)
     
     @member.reload
-    @member.email.should.not.be.blank
-    @member.avatar.name.should.not.be.blank
+    @member.address.should.be.blank
+    @member.avatar.visitor_id.should.be.blank
   end
+  
+  it "should still allow to bypass validations on the associated model" do
+    @member.email = ''
+    @member.avatar.name = ''
+    
+    @member.save(false).should.be true
+    @member.reload
+    
+    @member.email.should.be.blank
+    @member.avatar.name.should.be.blank
+  end
+  
+  it "should still raise an ActiveRecord::RecordInvalid exception if we want that" do
+    @member.avatar.name = ''
+    
+    lambda {
+      @member.save!
+    }.should.raise(ActiveRecord::RecordInvalid)
+  end
+  
 end
 
 describe "AutosaveAssociation, on a has_many association" do
@@ -86,16 +108,36 @@ describe "AutosaveAssociation, on a has_many association" do
   end
   
   it "should rollback any changes if an exception occurred while saving" do
-    @visitor.avatars.first.name = ''
-    @visitor.email = ''
+    @visitor.avatars.first.stubs(:save).raises(RuntimeError, 'Error!')
+    
+    @visitor.avatars.last.member_id = 123
+    @visitor.address = 'Another address 1'
     
     lambda {
-      @visitor.save(false).should.be false
-    }.should.not.raise(ActiveRecord::RecordInvalid)
+      @visitor.save.should.be false
+    }.should.not.raise(Exception)
     
     @visitor.reload
-    @visitor.email.should.not.be.blank
-    @visitor.avatars.first.name.should.not.be.blank
-    @visitor.avatars.last.name.should.not.be.blank
+    @visitor.address.should.be.blank
+    @visitor.avatars.last.member_id.should.be.blank
+  end
+  
+  it "should still allow to bypass validations on the associated models" do
+    @visitor.email = ''
+    @visitor.avatars.first.name = ''
+    
+    @visitor.save(false).should.be true
+    @visitor.reload
+    
+    @visitor.email.should.be.blank
+    @visitor.avatars.first.name.should.be.blank
+  end
+  
+  it "should still raise an ActiveRecord::RecordInvalid exception if we want that" do
+    @visitor.avatars.first.name = ''
+    
+    lambda {
+      @visitor.save!
+    }.should.raise(ActiveRecord::RecordInvalid)
   end
 end

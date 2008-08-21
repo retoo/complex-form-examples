@@ -11,10 +11,12 @@ def setup_db
   ActiveRecord::Schema.define(:version => 1) do
     create_table :members do |t|
       t.column :email, :string
+      t.column :address, :string
     end
     
     create_table :visitors do |t|
       t.column :email, :string
+      t.column :address, :string
     end
     
     create_table :artists do |t|
