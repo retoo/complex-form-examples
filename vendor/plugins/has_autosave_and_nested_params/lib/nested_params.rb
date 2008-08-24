@@ -78,7 +78,17 @@ module NestedParams
     if nested_params
       attr = args.first
       define_nested_params_for_has_many_association(attr, destroy_missing, reject_empty)
-      define_autosave_for_has_many_association(attr)
+      define_autosave_and_validation_for_has_many_association(attr)
+    end
+  end
+  
+  def has_one_with_nested_params(*args)
+    nested_params = args.last.delete(:nested_params) if args.last.is_a?(Hash)
+    has_one_without_nested_params(*args)
+    if nested_params
+      attr = args.first
+      define_nested_params_for_has_one_association(attr)
+      define_autosave_and_validation_for_has_one_association(attr)
     end
   end
   
@@ -119,16 +129,6 @@ module NestedParams
     end
     
     alias_method_chain("#{attr}=", :nested_params)
-  end
-  
-  def has_one_with_nested_params(*args)
-    nested_params = args.last.delete(:nested_params) if args.last.is_a?(Hash)
-    has_one_without_nested_params(*args)
-    if nested_params
-      attr = args.first
-      define_nested_params_for_has_one_association(attr)
-      define_autosave_for_has_one_association(attr)
-    end
   end
   
   def define_nested_params_for_has_one_association(attr)

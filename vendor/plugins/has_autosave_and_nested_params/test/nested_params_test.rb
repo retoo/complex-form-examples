@@ -187,6 +187,8 @@ describe "NestedParams, on a has_one association" do
         def has_many(*args); end
       end
       
+      def save(*args); end
+      
       extend NestedParams
     end
     (class << klass; self; end).should.include AutosaveAssociation
