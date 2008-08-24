@@ -1,40 +1,70 @@
 require File.expand_path('../autosave_association', __FILE__)
 
-# Adds :nested_params to the options for has_one and has_many associations,
-# which allows attributes of the associated model to be set directly
-# with a hash to #attributes=.
-#
+# Adds <tt>:nested_params</tt>, <tt>:reject_empty</tt> and <tt>:destroy_missing</tt> to the options for <tt>has_one</tt> and <tt>has_many</tt> associations.
+# Which allows attributes of the associated model to be set directly
+# with a hash to ActiveRecord::Base#attributes=.
 # This is handy for when you have a form consisting of a parent and one or more child records.
 #
-# All the associations that you enable :nested_params on, will automatically have :autosave turned on as well.
+# All the associations that you enable <tt>:nested_params</tt> on, will automatically have <tt>:autosave</tt> turned on as well.
 # See AutosaveAssociation for more info.
 #
-# Example of a has_one association:
+# Examples for a has_one association:
 #
 #   class Member < ActiveRecord::Base
 #     extend NestedParams
 #     has_one :avatar, :nested_params => true
 #   end
 #
-#   params[:member] # => { 'name' => 'joe', 'avatar' => { 'name' => 'sadly' }}
+#   # Adding an associated model:
+#   params[:member] # => { 'name' => 'jack', 'avatar' => { 'name' => 'smiley' }}
 #
+#   member = Member.create(params[:member])
+#   member.avatar.name # => 'smiley'
+#   
+#   # Updating the associated model:
+#   params # => { 'id' => '1', 'member' => { 'name' => 'joe', 'avatar' => { 'name' => 'sadly' }}}
+#
+#   member = Member.find(params[:id])
 #   member.update_attributes params[:member]
-#   member.reload;
-#
 #   member.avatar.name # => 'sadly'
 #
-# Example of a has_many association:
+# Examples for a has_many association:
 #
 #   class Member < ActiveRecord::Base
 #     extend NestedParams
-#     has_many :avatars, :nested_params => true
+#     has_many :posts, :nested_params => true, :destroy_missing => true, :reject_empty => true
 #   end
 #
-#   params[:member] # => { 'name' => 'joe', 'avatars' => { '1' => { 'name' => 'sadly' }, '2' => { 'name' => 'smiley' }}}
-#   member.update_attributes params[:member]
+#   # Creating associated models. Use the :reject_empty option to not create associated models for any empty hashes (Turned off by default):
+#   params[:member] # => { 'name' => 'joe', 'posts' => {
+#     'new_12345' => { 'title' => 'first psot' },
+#     'new_54321' => { 'title' => 'other post' },
+#     'new_67890' => { 'title' => '' } # This one is empty and will be rejected.
+#   }}
 #
-#   Avatar.find(1).name # => 'sadly'
-#   Avatar.find(2).name # => 'smiley'
+#   member = Member.create(params[:member])
+#   member.posts.length # => 2
+#   member.posts.first.title # => 'first psot'
+#   member.posts.last.title # => 'other post'
+#
+#   # Updating the associated models:
+#   params[:member] # => { 'name' => 'joe', 'posts' => {
+#     '1' => { 'title' => '[UPDATED] first psot' },
+#     '2' => { 'title' => '[UPDATED] other post' }
+#   }}
+#
+#   member.update_attributes params[:member]
+#   member.posts.first.title # => '[UPDATED] first psot'
+#   member.posts.last.title # => '[UPDATED] other post'
+#
+#   # Destroy an associated model by leaving it out of the attributes hash. Turn it on with the :destroy_missing option (Turned off by default):
+#   params[:member] # => { 'name' => 'joe', 'posts' => {
+#     '2' => { 'title' => '[UPDATED] other post is now the only post' }
+#   }}
+#
+#   member.update_attributes params[:member]
+#   member.posts.length # => 1
+#   member.posts.first.title # => '[UPDATED] other post is now the only post'
 module NestedParams
   def has_many_with_nested_params(*args)
     if (options = args.last).is_a?(Hash)

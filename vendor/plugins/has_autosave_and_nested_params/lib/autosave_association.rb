@@ -1,6 +1,13 @@
-# Adds :autosave to the options for has_one and has_many associations,
-# which will automatically save the associated models after
-# the parent has been saved.
+# Adds <tt>:autosave</tt> to the options for has_one and has_many associations.
+# Which will automatically save the associated models after
+# the parent has been saved, but only if all validations pass on both
+# the parent and the assocatiated models.
+#
+# All saving will be done within a transaction, so an exception raised in one
+# of the associated models should not leave the db in an inconsistent state.
+#
+# Note that using ActiveRecord#save(false) on the parent to bypass validations, will also
+# bypass any validations on the associated models.
 #
 # Example of a has_one association:
 #
@@ -37,10 +44,16 @@ module AutosaveAssociation
   def has_many_with_autosave(*args)
     autosave = args.last.delete(:autosave) if args.last.is_a?(Hash)
     has_many_without_autosave(*args)
-    define_autosave_for_has_many_association(args.first) if autosave
+    define_autosave_and_validation_for_has_many_association(args.first) if autosave
   end
   
-  def define_autosave_for_has_many_association(attr)
+  def has_one_with_autosave(*args)
+    autosave = args.last.delete(:autosave) if args.last.is_a?(Hash)
+    has_one_without_autosave(*args)
+    define_autosave_and_validation_for_has_one_association(args.first) if autosave
+  end
+  
+  def define_autosave_and_validation_for_has_many_association(attr)
     class_eval do
       define_method("autosave_#{attr}") do
         send(attr).each { |x| x.save(false) }
@@ -61,16 +74,7 @@ module AutosaveAssociation
     validate "validate_#{attr}"
   end
   
-  def has_one_with_autosave(*args)
-    autosave = args.last.delete(:autosave) if args.last.is_a?(Hash)
-    has_one_without_autosave(*args)
-    define_autosave_for_has_one_association(args.first) if autosave
-  end
-  
-  # Defines the method that will save the association after the model is saved.
-  # Also defines a validation method for the association which will add any errors
-  # of the association to the models errors.
-  def define_autosave_for_has_one_association(attr)
+  def define_autosave_and_validation_for_has_one_association(attr)
     class_eval do
       define_method("autosave_#{attr}") do
         if associated_model = send(attr)
@@ -88,23 +92,26 @@ module AutosaveAssociation
     end
   end
   
+  module InstanceMethods
+    def save_with_autosave(run_validations = true)
+      self.class.transaction { run_validations ? save! : save_without_autosave(false) }
+      true
+    rescue
+      # TODO: We rescue everything.. Is that ok? Or should we only rescue certain exceptions?
+      false
+    end
+    
+    def self.included(klass)
+      klass.class_eval { alias_method_chain :save, :autosave }
+    end
+  end
+  
   def self.extended(klass)
     return if klass.respond_to? :has_one_without_autosave
     class << klass
       alias_method_chain :has_many, :autosave
       alias_method_chain :has_one,  :autosave
     end
-    
-    klass.class_eval do
-      def save_with_autosave(run_validations = true)
-        self.class.transaction { run_validations ? save! : save_without_autosave(false) }
-        true
-      rescue
-        # TODO: We rescue everything.. Is that ok? Or should we only rescue certain exceptions?
-        false
-      end
-      
-      alias_method_chain :save, :autosave
-    end
+    klass.send(:include, InstanceMethods)
   end
 end
