@@ -2,7 +2,9 @@ require 'rubygems'
 require 'test/spec'
 require 'mocha'
 require 'activerecord'
-require File.expand_path('../../lib/nested_params', __FILE__)
+
+$: << File.expand_path('../../lib', __FILE__)
+require 'nested_params'
 
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
 ActiveRecord::Migration.verbose = false

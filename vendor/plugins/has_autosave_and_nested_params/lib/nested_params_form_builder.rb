@@ -13,10 +13,4 @@ class NestedParamsFormBuilder < ActionView::Helpers::FormBuilder
     end
     super
   end
-  
-  private
-  
-  def log(*args)
-    Rails.logger.info args.map { |obj| obj.inspect }.join(', ')
-  end
 end
