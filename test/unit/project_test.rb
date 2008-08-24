@@ -40,4 +40,16 @@ describe "Project" do
     @project.name.should == 'NestedParams and AutosaveAssociation'
     @project.tasks.first.name.should == 'Just start!'
   end
+  
+  it "should rollback any changes to the project and tasks if an exception occurs in one of the tasks" do
+    Task.any_instance.stubs(:save).raises(Exception, 'Oh noes!')
+    
+    @project.attributes = @valid_update_params
+    @project.save
+    
+    @project.reload
+    
+    @project.name.should == 'NestedParams'
+    @project.tasks.map(&:name).sort.should == ['Check other implementations', 'Try with our plugin']
+  end
 end

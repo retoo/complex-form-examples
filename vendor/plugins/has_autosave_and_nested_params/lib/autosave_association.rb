@@ -94,9 +94,9 @@ module AutosaveAssociation
   
   module InstanceMethods
     def save_with_autosave(run_validations = true)
-      self.class.transaction { run_validations ? save! : save_without_autosave(false) }
+      transaction { run_validations ? save! : save_without_autosave(false) }
       true
-    rescue
+    rescue Exception => e
       # TODO: We rescue everything.. Is that ok? Or should we only rescue certain exceptions?
       false
     end

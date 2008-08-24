@@ -135,6 +135,21 @@ describe "NestedParams, on a has_many association" do
       @visitor.update_attributes @valid_alt_params
     end
   end
+  
+  it "should rollback any changes if an exception occurred while saving" do
+    Artist.any_instance.stubs(:save).raises(RuntimeError, 'Error!')
+    
+    lambda {
+      @visitor.update_attributes({
+        :email => 'poncho@example.com',
+        :artists => { @visitor.artists.last.id => { :member_id => 123 } }
+      }).should.be false
+    }.should.not.raise(Exception)
+    
+    @visitor.reload
+    @visitor.email.should == 'paco@example.com'
+    @visitor.artists.last.member_id.should.be.blank
+  end
 end
 
 describe "NestedParams, on a has_one association" do
