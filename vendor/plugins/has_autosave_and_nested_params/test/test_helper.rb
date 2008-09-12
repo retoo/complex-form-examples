@@ -8,6 +8,8 @@ require 'nested_params'
 
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
 ActiveRecord::Migration.verbose = false
+# ActiveRecord::Base.logger = Logger.new($stdout)
+# ActiveRecord::Base.logger.level = Logger::DEBUG
 
 def setup_db
   ActiveRecord::Schema.define(:version => 1) do
