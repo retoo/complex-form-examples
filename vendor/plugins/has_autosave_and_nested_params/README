@@ -8,6 +8,10 @@ Adds :nested_params to the options for has_one and has_many associations,
 which allows attributes of the associated model to be set directly
 with a hash to ActiveRecord::Base#attributes=.
 
+== NestedParamsFormBuilder
+Use this form builder to get a NestedParams aware fields_for method.
+This will handle has_many associated models, that have NestedParams enabled.
+
 === License
 Copyright (c) 2008 Eloy Duran <eloy@fngtps.com>
 
