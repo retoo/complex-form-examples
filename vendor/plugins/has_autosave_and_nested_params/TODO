@@ -8,3 +8,5 @@ AutosaveAssociation:
     if it's a save without validations it should also be saved without validations.
     Actually we can probably safely always save the association without validations because if the parent needs to be
     validated it will already validate the association and thus will only be saved if validations are turned off.
+NestedParams:
+- We don't need to support arrays of ids anymore, because when using the NestedParamsFormBuilder we always get a hash.
