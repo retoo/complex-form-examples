@@ -33,12 +33,6 @@ class ProjectsController < ApplicationController
   def update
     @project = Project.find(params[:id])
     @project.attributes = params[:project]
-    # def (@project.tasks.first).save(*args)
-    #   raise RuntimeError, 'oh noes!'
-    # end
-    
-    #if @project.update_attributes(params[:project])
-    #p @project.save
     if @project.save
       flash[:notice] = "Successfully updated project."
       redirect_to @project
