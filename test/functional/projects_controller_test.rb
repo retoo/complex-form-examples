@@ -39,19 +39,6 @@ describe "On a ProjectsController, when updating" do
     }.should.differ('Task.count', +1)
   end
   
-  xit "should sort by the ids of the tasks before passing them on to the project" do
-    Task.delete_all
-    tasks = {
-      'new_456' => { :name => 'new_456' },
-      'new_789' => { :name => 'new_789' },
-      'new_123' => { :name => 'new_123' }
-    }
-    p tasks
-    put :update, :id => @project.id, :project => @valid_update_params.merge(:tasks => tasks)
-    p @project.reload.tasks
-    @project.reload.tasks.sort_by(&:id).map(&:name).should == tasks.map { |_, h| h[:name] }.sort
-  end
-  
   it "should reject any new task that's empty" do
     @valid_update_params[:tasks]['new_12345'] = { :name => '', :due_at => nil }
     

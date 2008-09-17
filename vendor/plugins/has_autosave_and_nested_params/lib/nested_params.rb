@@ -95,6 +95,7 @@ module NestedParams
   def define_nested_params_for_has_many_association(attr, destroy_missing, reject_empty)
     class_eval do
       define_method("#{attr}_with_nested_params=") do |value|
+        p self, value.class
         if value.is_a?(Hash) || value.is_a?(ActiveSupport::OrderedHash)
           if destroy_missing
             # Get all ids and subtract the ones we received, destroy the remainder

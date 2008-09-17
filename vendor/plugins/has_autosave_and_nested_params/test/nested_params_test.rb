@@ -76,20 +76,6 @@ describe "NestedParams, on a has_many association" do
     @visitor.artists.map(&:name).sort.should == %w{ jack jill joe }
   end
   
-  it "should sort 'new_' records before adding them to the association" do
-    Artist.delete_all
-    
-    artists = ActiveSupport::OrderedHash.new
-    artists['new_456'] = { :name => 'new_456' }
-    artists['new_789'] = { :name => 'new_789' }
-    artists['new_123'] = { :name => 'new_123' }
-    
-    @valid_alt_params[:artists] = artists
-    @visitor.update_attributes @valid_alt_params
-    
-    @visitor.reload.artists.sort_by(&:id).map(&:name).should == %w{ new_123 new_456 new_789 }
-  end
-  
   it "should automatically reject any new record which is empty" do
     @valid_alt_params[:artists]["new_12345"] = { :name => '' }
     
