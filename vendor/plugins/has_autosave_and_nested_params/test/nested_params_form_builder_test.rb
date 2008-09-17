@@ -49,7 +49,7 @@ class NestedParamsFormBuilderTest < ActionView::TestCase
     assert_dom_equal expected, _erbout
   end
   
-  def test_should_build_a_form_for_new_records_using_their_object_id_as_a_composited_id
+  def test_should_build_a_form_for_new_records_using_a_incremental_counter_as_a_composited_id
     paco = @visitor.artists.build(:name => 'paco')
     poncho = @visitor.artists.build(:name => 'poncho')
     
@@ -64,8 +64,8 @@ class NestedParamsFormBuilderTest < ActionView::TestCase
     end
     
     expected = '<form action="http://www.example.com" method="post">' +
-               "<input id=\"visitor_artists__new_#{paco.object_id}_name\" name=\"visitor[artists][new_#{paco.object_id}][name]\" size=\"30\" type=\"text\" value=\"paco\" />" +
-               "<input id=\"visitor_artists__new_#{poncho.object_id}_name\" name=\"visitor[artists][new_#{poncho.object_id}][name]\" size=\"30\" type=\"text\" value=\"poncho\" />" +
+               "<input id=\"visitor_artists__new_1_name\" name=\"visitor[artists][new_1][name]\" size=\"30\" type=\"text\" value=\"paco\" />" +
+               "<input id=\"visitor_artists__new_2_name\" name=\"visitor[artists][new_2][name]\" size=\"30\" type=\"text\" value=\"poncho\" />" +
                '</form>'
     
     assert_dom_equal expected, _erbout
@@ -87,7 +87,7 @@ class NestedParamsFormBuilderTest < ActionView::TestCase
     
     expected = '<form action="http://www.example.com" method="post">' +
                '<input id="visitor_artists__1_name" name="visitor[artists][1][name]" size="30" type="text" value="paco" />' +
-               "<input id=\"visitor_artists__new_#{poncho.object_id}_name\" name=\"visitor[artists][new_#{poncho.object_id}][name]\" size=\"30\" type=\"text\" value=\"poncho\" />" +
+               "<input id=\"visitor_artists__new_1_name\" name=\"visitor[artists][new_1][name]\" size=\"30\" type=\"text\" value=\"poncho\" />" +
                '</form>'
     
     assert_dom_equal expected, _erbout
@@ -98,12 +98,4 @@ class NestedParamsFormBuilderTest < ActionView::TestCase
   def protect_against_forgery?
     false
   end
-  
-  # def method_missing(method, *args, &block)
-  #   if @controller.respond_to? method
-  #     @controller.send(method, *args, &block)
-  #   else
-  #     super
-  #   end
-  # end
 end

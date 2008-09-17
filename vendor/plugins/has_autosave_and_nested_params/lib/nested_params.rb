@@ -95,25 +95,25 @@ module NestedParams
   def define_nested_params_for_has_many_association(attr, destroy_missing, reject_empty)
     class_eval do
       define_method("#{attr}_with_nested_params=") do |value|
-        if value.is_a? Hash
+        if value.is_a?(Hash) || value.is_a?(ActiveSupport::OrderedHash)
           if destroy_missing
-            association = send(attr)
             # Get all ids and subtract the ones we received, destroy the remainder
             keys = value.keys.map { |key| key.to_s }
-            association.reject { |x| keys.include? x.id.to_s }.each { |record| record.destroy }
+            send(attr).reject { |x| keys.include? x.id.to_s }.each { |record| record.destroy }
           end
           
-          # For existing records and new records that are marked by an id that starts with 'new_'
+          new_records = []
           value.each do |id, attributes|
-            association ||= send(attr)
             if id.is_a?(String) && id.starts_with?('new_')
-              next if reject_empty && attributes.values.all? { |v| v.blank? }
-              association.build attributes
+              # Collect new records marked by an id that starts with 'new_
+              new_records << [id, attributes] unless reject_empty && attributes.values.all? { |v| v.blank? }
             else
-              # Find the record for this id and assign the attributes
-              association.detect { |x| x.id == id.to_i }.attributes = attributes
+              # Find the existing record for this id and assign the attributes
+              send(attr).detect { |x| x.id == id.to_i }.attributes = attributes
             end
           end
+          # Sort and build new records
+          new_records.sort_by { |id, _| id }.each { |_, attributes| send(attr).build attributes }
         else
           if value.is_a?(Array) && value.all? { |x| x.is_a?(Hash) }
             # For an array full of new record hashes
