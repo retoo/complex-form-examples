@@ -2,7 +2,7 @@ require File.expand_path('../../test_helper', __FILE__)
 
 describe "Project" do
   before do
-    @valid_params = { :name => 'NestedParams', :tasks => [
+    @valid_params = { :name => 'NestedParams', :tasks_attributes => [
       { :name => 'Check other implementations' },
       { :name => 'Try with our plugin' }
     ]}
@@ -10,7 +10,7 @@ describe "Project" do
     @project = Project.create(@valid_params)
     @tasks = @project.tasks
     
-    @valid_update_params = { :name => 'Dinner', :tasks => {
+    @valid_update_params = { :name => 'Dinner', :tasks_attributes => {
       @tasks.first.id.to_s => { :name => "Buy food" },
       @tasks.last.id.to_s  => { :name => "Cook" }
     }}

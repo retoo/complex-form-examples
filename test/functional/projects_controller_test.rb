@@ -9,7 +9,7 @@ describe "On a ProjectsController, when updating" do
     @project.tasks.create(:name => 'Try with our plugin')
     @tasks = @project.tasks
     
-    @valid_update_params = { :name => 'Dinner', :tasks => {
+    @valid_update_params = { :name => 'Dinner', :tasks_attributes => {
       @tasks.first.id => { :name => "Buy food" },
       @tasks.last.id  => { :name => "Cook" }
     }}
@@ -24,7 +24,7 @@ describe "On a ProjectsController, when updating" do
   end
   
   it "should destroy a missing task" do
-    @valid_update_params[:tasks].delete(@tasks.first.id)
+    @valid_update_params[:tasks_attributes].delete(@tasks.first.id)
     
     lambda {
       put :update, :id => @project.id, :project => @valid_update_params
@@ -32,7 +32,7 @@ describe "On a ProjectsController, when updating" do
   end
   
   it "should add a new task" do
-    @valid_update_params[:tasks]['new_12345'] = { :name => 'Take out' }
+    @valid_update_params[:tasks_attributes]['new_12345'] = { :name => 'Take out' }
     
     lambda {
       put :update, :id => @project.id, :project => @valid_update_params
@@ -40,7 +40,7 @@ describe "On a ProjectsController, when updating" do
   end
   
   it "should reject any new task that's empty" do
-    @valid_update_params[:tasks]['new_12345'] = { :name => '', :due_at => nil }
+    @valid_update_params[:tasks_attributes]['new_12345'] = { :name => '', :due_at => nil }
     
     lambda {
       put :update, :id => @project.id, :project => @valid_update_params
@@ -50,8 +50,8 @@ describe "On a ProjectsController, when updating" do
   end
   
   it "should destroy a missing task and add a new one" do
-    @valid_update_params[:tasks].delete(@tasks.first.id)
-    @valid_update_params[:tasks]['new_12345'] = { :name => 'Take out' }
+    @valid_update_params[:tasks_attributes].delete(@tasks.first.id)
+    @valid_update_params[:tasks_attributes]['new_12345'] = { :name => 'Take out' }
     
     lambda {
       put :update, :id => @project.id, :project => @valid_update_params
@@ -59,11 +59,11 @@ describe "On a ProjectsController, when updating" do
   end
   
   it "should not be valid if a task is invalid" do
-    put :update, :id => @project.id, :project => { :name => 'Nothing', :tasks => { @tasks.first.id => { :name => '' }, @tasks.last.id => { :name => '' }}}
+    put :update, :id => @project.id, :project => { :name => 'Nothing', :tasks_attributes => { @tasks.first.id => { :name => '' }, @tasks.last.id => { :name => '' }}}
     project = assigns(:project)
     
     project.should.not.be.valid
-    project.errors.on(:tasks_name).should == "can't be blank"
+    project.errors.on(:tasks_attributes_name).should == "can't be blank"
     
     project.reload
     project.name.should == 'NestedParams'
