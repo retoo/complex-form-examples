@@ -63,7 +63,7 @@ describe "On a ProjectsController, when updating" do
     project = assigns(:project)
     
     project.should.not.be.valid
-    project.errors.on(:tasks_attributes_name).should == "can't be blank"
+    project.errors.on(:tasks_name).should == "can't be blank"
     
     project.reload
     project.name.should == 'NestedParams'

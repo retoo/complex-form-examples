@@ -94,8 +94,7 @@ module NestedParams
   
   def define_nested_params_for_has_many_association(attr, destroy_missing, reject_empty)
     class_eval do
-      define_method("#{attr}_with_nested_params=") do |value|
-        p self, value.class
+      define_method("#{attr}_attributes=") do |value|
         if value.is_a?(Hash) || value.is_a?(ActiveSupport::OrderedHash)
           if destroy_missing
             # Get all ids and subtract the ones we received, destroy the remainder
@@ -122,29 +121,24 @@ module NestedParams
               send(attr).build attributes
             end
           else
-            # For existing instaniated records and all other stuff people might pass
-            send("#{attr}_without_nested_params=", value)
+            # TODO: Raise ArgumentError
           end
         end
       end
     end
-    
-    alias_method_chain("#{attr}=", :nested_params)
   end
   
   def define_nested_params_for_has_one_association(attr)
     class_eval do
-      define_method("#{attr}_with_nested_params=") do |value|
+      define_method("#{attr}_attributes=") do |value|
         if value.is_a? Hash
           send("build_#{attr}") if send(attr).nil?
           send(attr).attributes = value
         else
-          send("#{attr}_without_nested_params=", value)
+          # TODO: Raise ArgumentError
         end
       end
     end
-    
-    alias_method_chain("#{attr}=", :nested_params)
   end
   
   def self.extended(klass)
