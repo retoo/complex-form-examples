@@ -2,18 +2,32 @@ require File.expand_path('../../test_helper', __FILE__)
 
 describe "Project" do
   before do
-    @valid_params = { :name => 'NestedParams', :tasks_attributes => [
-      { :name => 'Check other implementations' },
-      { :name => 'Try with our plugin' }
-    ]}
+    @valid_params = {
+      :name => 'NestedParams',
+      :author_attributes => { :name => 'Eloy' },
+      :tasks_attributes => [
+        { :name => 'Check other implementations' },
+        { :name => 'Try with our plugin' }
+      ]
+    }
     
     @project = Project.create(@valid_params)
+    @author = @project.author
     @tasks = @project.tasks
     
-    @valid_update_params = { :name => 'Dinner', :tasks_attributes => {
-      @tasks.first.id.to_s => { :name => "Buy food" },
-      @tasks.last.id.to_s  => { :name => "Cook" }
-    }}
+    @valid_update_params = {
+      :name => 'Dinner',
+      :author_attributes => { :name => 'Mighty Mo' },
+      :tasks_attributes => {
+        @tasks.first.id.to_s => { :name => "Buy food" },
+        @tasks.last.id.to_s  => { :name => "Cook" }
+      }
+    }
+  end
+  
+  it "should take a hash with an author hash and update the author" do
+    @project.attributes = @valid_update_params
+    @project.author.name.should == 'Mighty Mo'
   end
   
   it "should take a hash with tasks hashes and create Task records for them" do

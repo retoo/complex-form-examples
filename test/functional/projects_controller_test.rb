@@ -5,6 +5,7 @@ describe "On a ProjectsController, when updating" do
   
   before do
     @project = Project.create(:name => 'NestedParams')
+    @project.create_author(:name => 'Eloy')
     @project.tasks.create(:name => 'Check other implementations')
     @project.tasks.create(:name => 'Try with our plugin')
     @tasks = @project.tasks
@@ -13,6 +14,11 @@ describe "On a ProjectsController, when updating" do
       @tasks.first.id => { :name => "Buy food" },
       @tasks.last.id  => { :name => "Cook" }
     }}
+  end
+  
+  it "should update the name of the author" do
+    put :update, :id => @project.id, :project => { :author_attributes => { :name => 'Mighty Mo' }}
+    @project.reload.author.name.should == 'Mighty Mo'
   end
   
   it "should update attributes of the nested tasks" do
