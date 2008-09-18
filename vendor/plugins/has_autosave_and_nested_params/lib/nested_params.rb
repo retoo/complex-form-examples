@@ -133,7 +133,6 @@ module NestedParams
       define_method("#{attr}_attributes") do
         send(attr).attributes
       end
-      alias_method "#{attr}_attributes_before_type_cast", "#{attr}_attributes"
       
       define_method("#{attr}_attributes=") do |value|
         if value.is_a? Hash
