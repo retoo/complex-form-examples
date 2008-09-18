@@ -42,8 +42,8 @@ class NestedParamsFormBuilderTest < ActionView::TestCase
     end
     
     expected = '<form action="http://www.example.com" method="post">' +
-               '<input id="visitor_artists__1_name" name="visitor[artists][1][name]" size="30" type="text" value="paco" />' +
-               '<input id="visitor_artists__2_name" name="visitor[artists][2][name]" size="30" type="text" value="poncho" />' +
+               '<input id="visitor_artists_attributes__1_name" name="visitor[artists_attributes][1][name]" size="30" type="text" value="paco" />' +
+               '<input id="visitor_artists_attributes__2_name" name="visitor[artists_attributes][2][name]" size="30" type="text" value="poncho" />' +
                '</form>'
     
     assert_dom_equal expected, _erbout
@@ -64,8 +64,8 @@ class NestedParamsFormBuilderTest < ActionView::TestCase
     end
     
     expected = '<form action="http://www.example.com" method="post">' +
-               "<input id=\"visitor_artists__new_1_name\" name=\"visitor[artists][new_1][name]\" size=\"30\" type=\"text\" value=\"paco\" />" +
-               "<input id=\"visitor_artists__new_2_name\" name=\"visitor[artists][new_2][name]\" size=\"30\" type=\"text\" value=\"poncho\" />" +
+               "<input id=\"visitor_artists_attributes__new_1_name\" name=\"visitor[artists_attributes][new_1][name]\" size=\"30\" type=\"text\" value=\"paco\" />" +
+               "<input id=\"visitor_artists_attributes__new_2_name\" name=\"visitor[artists_attributes][new_2][name]\" size=\"30\" type=\"text\" value=\"poncho\" />" +
                '</form>'
     
     assert_dom_equal expected, _erbout
@@ -86,8 +86,8 @@ class NestedParamsFormBuilderTest < ActionView::TestCase
     end
     
     expected = '<form action="http://www.example.com" method="post">' +
-               '<input id="visitor_artists__1_name" name="visitor[artists][1][name]" size="30" type="text" value="paco" />' +
-               "<input id=\"visitor_artists__new_1_name\" name=\"visitor[artists][new_1][name]\" size=\"30\" type=\"text\" value=\"poncho\" />" +
+               '<input id="visitor_artists_attributes__1_name" name="visitor[artists_attributes][1][name]" size="30" type="text" value="paco" />' +
+               "<input id=\"visitor_artists_attributes__new_1_name\" name=\"visitor[artists_attributes][new_1][name]\" size=\"30\" type=\"text\" value=\"poncho\" />" +
                '</form>'
     
     assert_dom_equal expected, _erbout

@@ -6,7 +6,7 @@ class NestedParamsFormBuilder < ActionView::Helpers::FormBuilder
         if reflection.macro == :has_many
           record = args.first
           # In the case of a new object use a fictive id which is composited with "new_" and the @child_counter.
-          name = "#{object_name}[#{record_or_name_or_array}][#{ record.new_record? ? "new_#{child_counter}" : record.id}]"
+          name = "#{object_name}[#{record_or_name_or_array}_attributes][#{ record.new_record? ? "new_#{child_counter}" : record.id}]"
           return @template.fields_for(name, *args, &block)
         end
       end
