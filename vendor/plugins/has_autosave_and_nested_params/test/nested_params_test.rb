@@ -169,6 +169,10 @@ describe "NestedParams, on a has_one association" do
     @member.artist.name.should == 'Poncho'
   end
   
+  it "should return a has with the attributes of the artist" do
+    @member.artist_attributes.should == @member.artist.attributes
+  end
+  
   it "should take a hash and assign the attributes to the associated model" do
     @member.attributes = { :email => 'pablo@example.com', :artist_attributes => { :name => 'Pablo' } }
     @member.email.should == 'pablo@example.com'

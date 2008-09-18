@@ -8,6 +8,14 @@
     <%= f.label :name, "Project:" %>
     <%= f.text_field :name %>
   </p>
+  
+  <p>
+    <% f.fields_for :author do |af| %>
+      <%= af.label :name, "Author name:" %>
+      <%= af.text_field :name %>
+    <% end %>
+  </p>
+  
   <div id="tasks">
     <%= render :partial => 'task', :collection => @project.tasks, :locals => { :pf => f } %>
   </div>

@@ -5,6 +5,11 @@
   <%=h @project.name %>
 </p>
 
+<p>
+  <strong>Author:</strong>
+  <%=h @project.author.name if @project.author %>
+</p>
+
 <h3>Tasks</h3>
 
 <ul>

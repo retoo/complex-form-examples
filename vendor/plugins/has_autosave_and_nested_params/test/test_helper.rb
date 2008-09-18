@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'test/spec'
 require 'mocha'
+
 require 'activerecord'
 
 $: << File.expand_path('../../lib', __FILE__)
