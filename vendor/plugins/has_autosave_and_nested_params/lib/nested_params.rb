@@ -130,10 +130,6 @@ module NestedParams
   
   def define_nested_params_for_has_one_association(attr)
     class_eval do
-      define_method("#{attr}_attributes") do
-        send(attr).attributes
-      end
-      
       define_method("#{attr}_attributes=") do |value|
         if value.is_a? Hash
           send("build_#{attr}") if send(attr).nil?
