@@ -157,6 +157,46 @@ class NestedParamsFormBuilderForHasManyTest < ActionView::TestCase
     assert_dom_equal expected, _erbout
   end
   
+  def test_should_build_a_form_and_yield_the_form_builder_and_each_record
+    @visitor.artists.create(:name => 'paco')
+    @visitor.artists.create(:name => 'poncho')
+    
+    _erbout = ''
+    
+    form_for(:visitor, @visitor, :builder => NestedParamsFormBuilder) do |vf|
+      vf.fields_for(:artists) do |af, artist|
+        _erbout.concat af.text_field(:name)
+      end
+    end
+    
+    expected = '<form action="http://www.example.com" method="post">' +
+               '<input id="visitor_artists_attributes__1_name" name="visitor[artists_attributes][1][name]" size="30" type="text" value="paco" />' +
+               '<input id="visitor_artists_attributes__2_name" name="visitor[artists_attributes][2][name]" size="30" type="text" value="poncho" />' +
+               '</form>'
+    
+    assert_dom_equal expected, _erbout
+  end
+  
+  def test_should_build_a_form_and_yield_the_form_builder_but_without_the_record
+    @visitor.artists.create(:name => 'paco')
+    @visitor.artists.create(:name => 'poncho')
+    
+    _erbout = ''
+    
+    form_for(:visitor, @visitor, :builder => NestedParamsFormBuilder) do |vf|
+      vf.fields_for(:artists) do |af|
+        _erbout.concat af.text_field(:name)
+      end
+    end
+    
+    expected = '<form action="http://www.example.com" method="post">' +
+               '<input id="visitor_artists_attributes__1_name" name="visitor[artists_attributes][1][name]" size="30" type="text" value="paco" />' +
+               '<input id="visitor_artists_attributes__2_name" name="visitor[artists_attributes][2][name]" size="30" type="text" value="poncho" />' +
+               '</form>'
+    
+    assert_dom_equal expected, _erbout
+  end
+  
   private
   
   def protect_against_forgery?
