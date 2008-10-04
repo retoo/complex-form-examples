@@ -56,10 +56,10 @@ describe "Project" do
   end
   
   it "should rollback any changes to the project and tasks if an exception occurs in one of the tasks" do
-    Task.any_instance.stubs(:save).raises(Exception, 'Oh noes!')
+    Task.any_instance.stubs(:save).raises
     
     @project.attributes = @valid_update_params
-    @project.save
+    lambda { @project.save }.should.raise
     
     @project.reload
     

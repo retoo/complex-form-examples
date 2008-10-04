@@ -1,5 +1,3 @@
-load 'nested_params_form_builder.rb'
-
 class ProjectsController < ApplicationController
   def index
     @projects = Project.find(:all)
