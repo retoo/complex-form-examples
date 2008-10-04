@@ -17,7 +17,17 @@
   </p>
   
   <div id="tasks">
-    <%= render :partial => 'task', :collection => @project.tasks, :locals => { :pf => f } %>
+    <%#= render :partial => 'task', :collection => @project.tasks, :locals => { :pf => f } %>
+    <!-- For the sake of demoing the fields_for which yields each record. -->
+    <% f.fields_for :tasks do |tf| %>
+      <div class="task">
+        <p>
+          <%= tf.label :name, "Task:" %>
+          <%= tf.text_field :name %>
+          <%= link_to_function "remove", "$(this).up('.task').remove()" %>
+        </p>
+      </div>
+    <% end %>
   </div>
   <p>
     <%= add_task_link "Add a task", f %>
