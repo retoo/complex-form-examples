@@ -13,8 +13,16 @@
 <h3>Tasks</h3>
 
 <ul>
-  <% for task in @project.tasks %>
+  <% @project.tasks.each do |task| %>
     <li><%=h task.name %></li>
+  <% end %>
+</ul>
+
+<h3>Tags</h3>
+
+<ul>
+  <% @project.tags.each do |tag| %>
+    <li><%=h tag.name %></li>
   <% end %>
 </ul>
 

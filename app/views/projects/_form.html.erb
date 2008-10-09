@@ -32,6 +32,24 @@
   <p>
     <%= add_task_link "Add a task", f %>
   </p>
+  
+  <div id="tags">
+    <%#= render :partial => 'task', :collection => @project.tasks, :locals => { :pf => f } %>
+    <!-- For the sake of demoing the fields_for which yields each record. -->
+    <% f.fields_for :tags do |tf| %>
+      <div class="tag">
+        <p>
+          <%= tf.label :name, "Tag:" %>
+          <%= tf.text_field :name %>
+          <%= link_to_function "remove", "$(this).up('.tag').remove()" %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+  <p>
+    <%= add_tag_link "Add a tag", f %>
+  </p>
+  
   <p>
     <%= f.submit "Submit" %>
   </p>

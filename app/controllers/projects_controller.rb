@@ -10,6 +10,7 @@ class ProjectsController < ApplicationController
   def new
     @project = Project.new
     @project.tasks.build
+    @project.tags.build
   end
   
   def create
@@ -26,6 +27,7 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
     # add an extra new record for debugging purposes
     @project.tasks.build
+    @project.tags.build
   end
   
   def update

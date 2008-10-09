@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080918210237) do
+ActiveRecord::Schema.define(:version => 20081009223404) do
 
   create_table "authors", :force => true do |t|
     t.integer  "project_id"
@@ -21,6 +21,20 @@ ActiveRecord::Schema.define(:version => 20080918210237) do
   add_index "authors", ["project_id"], :name => "index_authors_on_project_id"
 
   create_table "projects", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "projects_tags", :id => false, :force => true do |t|
+    t.integer "project_id"
+    t.integer "tag_id"
+  end
+
+  add_index "projects_tags", ["tag_id"], :name => "index_projects_tags_on_tag_id"
+  add_index "projects_tags", ["project_id"], :name => "index_projects_tags_on_project_id"
+
+  create_table "tags", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
