@@ -5,4 +5,4 @@ This example uses the NestedParams and AutosaveAssociation plugins currently in 
 No url yet.
 
 Rails is vendored using a Git submodule to this repository:
-http://github.com/ddollar/rails/tree/accessible-association-replacement
+http://github.com/alloy/complex-form-examples/tree/alloy-nested_params_merged_in_rails
