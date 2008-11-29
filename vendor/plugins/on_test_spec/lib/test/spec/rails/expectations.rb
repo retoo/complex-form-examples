@@ -2,6 +2,8 @@ module Test
   module Spec
     module Rails
       module ShouldExpectations
+        include Assertions
+        
         # Test that we were redirected somewhere:
         #   should.redirect
         #
@@ -62,8 +64,14 @@ module Test
           end
           assert pages.all? { |page| files.include?(page) }
         end
+        
+        # Test two HTML strings for equivalency (e.g., identical up to reordering of attributes)
+        def dom_equal(expected)
+          assert_dom_equal expected, @object
+        end
       end
       module ShouldNotExpectations
+        include Assertions
         
         # Test that an object is not valid
         def validate
@@ -77,6 +85,11 @@ module Test
           assert_no_difference(*args, &@object)
         end
         alias change differ
+        
+        # Test that two HTML strings are not equivalent
+        def dom_equal(expected)
+          assert_dom_not_equal expected, @object
+        end
       end
     end
   end

@@ -74,16 +74,4 @@ describe "On a ProjectsController, when updating" do
     project.reload
     project.name.should == 'NestedParams'
   end
-  
-  it "should rollback any changes to the project and tasks if an exception occurs in one of the tasks" do
-    Task.any_instance.stubs(:save).raises
-    
-    lambda {
-      put :update, :id => @project.id, :project => @valid_update_params
-      @project.reload
-    }.should.raise
-    
-    @project.name.should == 'NestedParams'
-    @project.tasks.map(&:name).sort.should == ['Check other implementations', 'Try with our plugin']
-  end
 end
