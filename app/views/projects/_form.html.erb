@@ -19,12 +19,12 @@
   <div id="tasks">
     <%#= render :partial => 'task', :collection => @project.tasks, :locals => { :pf => f } %>
     <!-- For the sake of demoing the fields_for which yields each record. -->
-    <% f.fields_for :tasks do |tf| %>
+    <% f.fields_for :tasks do |tf, task| %>
       <div class="task">
         <p>
           <%= tf.label :name, "Task:" %>
           <%= tf.text_field :name %>
-          <%= link_to_function "remove", "$(this).up('.task').remove()" %>
+          <%= remove_link_unless_new_record(tf, task) %>
         </p>
       </div>
     <% end %>
@@ -36,12 +36,12 @@
   <div id="tags">
     <%#= render :partial => 'task', :collection => @project.tasks, :locals => { :pf => f } %>
     <!-- For the sake of demoing the fields_for which yields each record. -->
-    <% f.fields_for :tags do |tf| %>
+    <% f.fields_for :tags do |tf, tag| %>
       <div class="tag">
         <p>
           <%= tf.label :name, "Tag:" %>
           <%= tf.text_field :name %>
-          <%= link_to_function "remove", "$(this).up('.tag').remove()" %>
+          <%= remove_link_unless_new_record(tf, tag) %>
         </p>
       </div>
     <% end %>
