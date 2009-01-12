@@ -1,8 +1,11 @@
 class Project < ActiveRecord::Base
+  has_one :author
+  has_many :tasks, :dependent => :destroy
+  has_and_belongs_to_many :tags
+  
   # Automatically turns on autosave and thus also validates
-  has_one :author, :accept_nested_attributes => true
-  has_many :tasks, :dependent => :destroy, :accept_nested_attributes => true, :destroy_missing => true
-  has_and_belongs_to_many :tags, :accept_nested_attributes => true, :destroy_missing => true
+  accept_nested_attributes_for :author
+  accept_nested_attributes_for :tasks, :tags, :allow_destroy => true, :reject_if => proc { |a| a['name'].blank? }
   
   validates_presence_of :name
 end

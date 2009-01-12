@@ -5,10 +5,10 @@ describe "Project" do
     @valid_params = {
       :name => 'NestedParams',
       :author_attributes => { :name => 'Eloy' },
-      :tasks_attributes => [
-        { :name => 'Check other implementations' },
-        { :name => 'Try with our plugin' }
-      ]
+      :tasks_attributes => {
+        'new_1' => { :name => 'Check other implementations' },
+        'new_2' => { :name => 'Try with our plugin' }
+      }.with_indifferent_access
     }
     
     @project = Project.create(@valid_params)
@@ -49,7 +49,7 @@ describe "Project" do
   it "should automatically save the tasks when the project is saved" do
     @project.name = 'NestedParams and AutosaveAssociation'
     @project.tasks.first.name = 'Just start!'
-    @project.save!; @project.reload
+    @project.save; @project.reload
     
     @project.name.should == 'NestedParams and AutosaveAssociation'
     @project.tasks.first.name.should == 'Just start!'

@@ -31,8 +31,8 @@ ActiveRecord::Schema.define(:version => 20081009223404) do
     t.integer "tag_id"
   end
 
-  add_index "projects_tags", ["tag_id"], :name => "index_projects_tags_on_tag_id"
   add_index "projects_tags", ["project_id"], :name => "index_projects_tags_on_project_id"
+  add_index "projects_tags", ["tag_id"], :name => "index_projects_tags_on_tag_id"
 
   create_table "tags", :force => true do |t|
     t.string   "name"

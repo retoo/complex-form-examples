@@ -1,6 +1,6 @@
 require File.expand_path('../../test_helper', __FILE__)
 
-describe "On a ProjectsController, when updating" do
+describe "On a ProjectsController, when updating", ActionController::TestCase do
   tests ProjectsController
   
   before do
@@ -30,7 +30,7 @@ describe "On a ProjectsController, when updating" do
   end
   
   it "should destroy a missing task" do
-    @valid_update_params[:tasks_attributes].delete(@tasks.first.id)
+    @valid_update_params[:tasks_attributes][@tasks.first.id]['_delete'] = '1'
     
     lambda {
       put :update, :id => @project.id, :project => @valid_update_params
@@ -45,8 +45,8 @@ describe "On a ProjectsController, when updating" do
     }.should.differ('Task.count', +1)
   end
   
-  it "should reject any new task that's empty" do
-    @valid_update_params[:tasks_attributes]['new_12345'] = { :name => '', :due_at => nil }
+  it "should reject any new task where the name is empty" do
+    @valid_update_params[:tasks_attributes]['new_12345'] = { 'name' => '', :due_at => nil }
     
     lambda {
       put :update, :id => @project.id, :project => @valid_update_params
@@ -55,8 +55,8 @@ describe "On a ProjectsController, when updating" do
     assigns(:project).should.be.valid
   end
   
-  it "should destroy a missing task and add a new one" do
-    @valid_update_params[:tasks_attributes].delete(@tasks.first.id)
+  it "should destroy a task and add a new one" do
+    @valid_update_params[:tasks_attributes][@tasks.first.id]['_delete'] = '1'
     @valid_update_params[:tasks_attributes]['new_12345'] = { :name => 'Take out' }
     
     lambda {
