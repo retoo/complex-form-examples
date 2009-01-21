@@ -1,5 +1,5 @@
 class Project < ActiveRecord::Base
-  has_one :author
+  belongs_to :author
   has_many :tasks, :dependent => :destroy
   has_and_belongs_to_many :tags
   

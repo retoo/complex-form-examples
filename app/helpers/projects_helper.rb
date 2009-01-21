@@ -8,6 +8,13 @@ module ProjectsHelper
     end
   end
   
+  # These use the current date, but they could be lots easier.
+  # Maybe just keep a global counter which starts at 10 or so.
+  # That would be good enough if we only build 1 new record in the controller.
+  #
+  # And this of course is only needed because Ryan's example uses JS to add new
+  # records. If you just build a new one in the controller this is all unnecessary.
+  
   def add_task_link(name, form)
     link_to_function name do |page|
       task = render(:partial => 'task', :locals => { :pf => form, :task => Task.new })

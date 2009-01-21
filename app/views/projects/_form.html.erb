@@ -2,55 +2,62 @@
 
 <%= error_messages_for :project %>
 
-<% form_for @project do |f| -%>
+<% form_for @project do |project_form| -%>
 
   <p>
-    <%= f.label :name, "Project:" %>
-    <%= f.text_field :name %>
+    <%= project_form.label :name, "Project:" %>
+    <%= project_form.text_field :name %>
   </p>
   
   <p>
-    <% f.fields_for :author do |af| %>
-      <%= af.label :name, "Author name:" %>
-      <%= af.text_field :name %>
+    <% project_form.fields_for :author do |author_form| %>
+      <%= author_form.label :name, "Author name:" %>
+      <%= author_form.text_field :name %>
     <% end %>
   </p>
   
   <div id="tasks">
-    <%#= render :partial => 'task', :collection => @project.tasks, :locals => { :pf => f } %>
-    <!-- For the sake of demoing the fields_for which yields each record. -->
-    <% f.fields_for :tasks do |tf, task| %>
+    <!-- Notice that this nested fields_for block not only receives the form builder,
+         but also the `task' instance for this form builder. -->
+    <% project_form.fields_for :tasks do |task_form, task| %>
       <div class="task">
         <p>
-          <%= tf.label :name, "Task:" %>
-          <%= tf.text_field :name %>
-          <%= remove_link_unless_new_record(tf, task) %>
+          <%= task_form.label :name, "Task:" %>
+          <%= task_form.text_field :name %>
+          <!-- Uses JS to hide this `task' and set a hidden_field with the name
+               `_delete' to "1" which causes the record to be deleted. -->
+          <%= remove_link_unless_new_record(task_form, task) %>
         </p>
       </div>
     <% end %>
   </div>
   <p>
-    <%= add_task_link "Add a task", f %>
+    <%= add_task_link "Add a task", project_form %>
   </p>
   
   <div id="tags">
-    <%#= render :partial => 'task', :collection => @project.tasks, :locals => { :pf => f } %>
-    <!-- For the sake of demoing the fields_for which yields each record. -->
-    <% f.fields_for :tags do |tf, tag| %>
+    <!-- Notice that this nested fields_for block not only receives the form builder,
+         but also the `tag' instance for this form builder. -->
+    <% project_form.fields_for :tags do |tag_form, tag| %>
       <div class="tag">
         <p>
-          <%= tf.label :name, "Tag:" %>
-          <%= tf.text_field :name %>
-          <%= remove_link_unless_new_record(tf, tag) %>
+          <%= tag_form.label :name, "Tag:" %>
+          <%= tag_form.text_field :name %>
+          
+          <% unless tag.new_record? %>
+            <!-- For existing records we add a checkbox to be able to delete records. -->
+            <%= tag_form.label :_delete, "Remove:" %>
+            <%= tag_form.check_box :_delete %>
+          <% end %>
         </p>
       </div>
     <% end %>
   </div>
   <p>
-    <%= add_tag_link "Add a tag", f %>
+    <%= add_tag_link "Add a tag", project_form %>
   </p>
   
   <p>
-    <%= f.submit "Submit" %>
+    <%= project_form.submit "Submit" %>
   </p>
 <% end -%>
