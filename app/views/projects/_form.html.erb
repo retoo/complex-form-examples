@@ -17,16 +17,14 @@
   </p>
   
   <div id="tasks">
-    <!-- Notice that this nested fields_for block not only receives the form builder,
-         but also the `task' instance for this form builder. -->
-    <% project_form.fields_for :tasks do |task_form, task| %>
+    <% project_form.fields_for :tasks do |task_form| %>
       <div class="task">
         <p>
           <%= task_form.label :name, "Task:" %>
           <%= task_form.text_field :name %>
           <!-- Uses JS to hide this `task' and set a hidden_field with the name
                `_delete' to "1" which causes the record to be deleted. -->
-          <%= remove_link_unless_new_record(task_form, task) %>
+          <%= remove_link_unless_new_record(task_form) %>
         </p>
       </div>
     <% end %>
@@ -36,15 +34,13 @@
   </p>
   
   <div id="tags">
-    <!-- Notice that this nested fields_for block not only receives the form builder,
-         but also the `tag' instance for this form builder. -->
-    <% project_form.fields_for :tags do |tag_form, tag| %>
+    <% project_form.fields_for :tags do |tag_form| %>
       <div class="tag">
         <p>
           <%= tag_form.label :name, "Tag:" %>
           <%= tag_form.text_field :name %>
           
-          <% unless tag.new_record? %>
+          <% unless tag_form.object.new_record? %>
             <!-- For existing records we add a checkbox to be able to delete records. -->
             <%= tag_form.label :_delete, "Remove:" %>
             <%= tag_form.check_box :_delete %>

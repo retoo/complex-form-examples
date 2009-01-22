@@ -1,9 +1,9 @@
 module ProjectsHelper
-  def remove_link_unless_new_record(fields, record)
-    unless record.new_record?
+  def remove_link_unless_new_record(fields)
+    unless fields.object.new_record?
       out = ''
       out << fields.hidden_field(:_delete)
-      out << link_to_function("remove", "$(this).up('.#{record.class.name.underscore}').hide(); $(this).previous().value = '1'")
+      out << link_to_function("remove", "$(this).up('.#{fields.object.class.name.underscore}').hide(); $(this).previous().value = '1'")
       out
     end
   end
