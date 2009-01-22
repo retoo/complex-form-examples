@@ -13,6 +13,9 @@
     <% project_form.fields_for :author do |author_form| %>
       <%= author_form.label :name, "Author name:" %>
       <%= author_form.text_field :name %>
+      
+      <%= author_form.label :raise_exception, "Raise exception:" %>
+      <%= author_form.check_box :raise_exception %>
     <% end %>
   </p>
   
@@ -22,6 +25,10 @@
         <p>
           <%= task_form.label :name, "Task:" %>
           <%= task_form.text_field :name %>
+          
+          <%= task_form.label :raise_exception, "Raise exception:" %>
+          <%= task_form.check_box :raise_exception %>
+          
           <!-- Uses JS to hide this `task' and set a hidden_field with the name
                `_delete' to "1" which causes the record to be deleted. -->
           <%= remove_link_unless_new_record(task_form) %>
@@ -39,6 +46,9 @@
         <p>
           <%= tag_form.label :name, "Tag:" %>
           <%= tag_form.text_field :name %>
+          
+          <%= tag_form.label :raise_exception, "Raise exception:" %>
+          <%= tag_form.check_box :raise_exception %>
           
           <% unless tag_form.object.new_record? %>
             <!-- For existing records we add a checkbox to be able to delete records. -->
