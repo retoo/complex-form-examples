@@ -9,10 +9,21 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090121125841) do
+ActiveRecord::Schema.define(:version => 20090202221147) do
 
   create_table "authors", :force => true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "notes", :force => true do |t|
+    t.text "body"
+  end
+
+  create_table "priorities", :force => true do |t|
+    t.integer  "level"
+    t.integer  "task_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -44,6 +55,11 @@ ActiveRecord::Schema.define(:version => 20090121125841) do
     t.datetime "due_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "tasks_notes", :id => false, :force => true do |t|
+    t.integer "task_id"
+    t.integer "note_id"
   end
 
 end

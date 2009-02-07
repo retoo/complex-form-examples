@@ -1,9 +1,13 @@
 <div class="task">
-<% pf.fields_for :tasks, task do |f| %>
   <p>
     <%= f.label :name, "Task:" %>
     <%= f.text_field :name %>
-    <%= link_to_function "remove", "$(this).up('.task').remove()" %>
+    
+    <%= f.label :raise_exception, "Raise exception:" %>
+    <%= f.check_box :raise_exception %>
+    
+    <!-- Uses JS to hide this `task' and set a hidden_field with the name
+         `_delete' to "1" which causes the record to be deleted. -->
+    <%= remove_link_unless_new_record(f) %>
   </p>
-<% end %>
 </div>

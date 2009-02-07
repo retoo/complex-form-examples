@@ -8,30 +8,35 @@ module ProjectsHelper
     end
   end
   
-  # These use the current date, but they could be lots easier.
-  # Maybe just keep a global counter which starts at 10 or so.
-  # That would be good enough if we only build 1 new record in the controller.
+  # This method demonstrates the use of the :child_index option to render a
+  # form partial for, for instance, client side addition of new nested
+  # records.
   #
-  # And this of course is only needed because Ryan's example uses JS to add new
-  # records. If you just build a new one in the controller this is all unnecessary.
-  
-  def add_task_link(name, form)
-    link_to_function name do |page|
-      task = render(:partial => 'task', :locals => { :pf => form, :task => Task.new })
-      page << %{
-        var new_task_id = "new_" + new Date().getTime();
-        $('tasks').insert({ bottom: "#{ escape_javascript task }".replace(/new_\\d+/g, new_task_id) });
-      }
-    end
-  end
-  
-  def add_tag_link(name, form)
-    link_to_function name do |page|
-      tag = render(:partial => 'tag', :locals => { :pf => form, :tag => Tag.new })
-      page << %{
-        var new_tag_id = "new_" + new Date().getTime();
-        $('tags').insert({ bottom: "#{ escape_javascript tag }".replace(/new_\\d+/g, new_tag_id) });
-      }
+  # This specific example creates a link which uses javascript to add a new
+  # form partial to the DOM.
+  #
+  #   <% form_for @project do |project_form| -%>
+  #     <div id="tasks">
+  #       <% project_form.fields_for :tasks do |task_form| %>
+  #         <%= render :partial => 'task', :locals => { :f => task_form } %>
+  #       <% end %>
+  #     </div>
+  #   <% end -%>
+  def add_record_link(form_builder, method, caption, options = {})
+    options[:object] ||= form_builder.object.class.reflect_on_association(method).klass.new
+    options[:partial] ||= method.to_s.singularize
+    options[:form_builder_local] ||= :f
+    options[:insert] ||= method
+    
+    link_to_function(caption) do |page|
+      form_builder.fields_for(method, options[:object], :child_index => 'NEW_RECORD') do |f|
+        html = render(:partial => options[:partial], :locals => { options[:form_builder_local] => f })
+        page << %{
+          $('#{options[:insert]}').insert({
+            bottom: '#{escape_javascript(html)}'.replace(/NEW_RECORD/g, new Date().getTime())
+          });
+        }
+      end
     end
   end
 end
