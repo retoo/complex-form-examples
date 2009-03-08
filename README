@@ -1,8 +1,15 @@
-Complex Form Examples
----------------------
+Complex Form Examples - 2 level nesting
+----------------------------------------
 
-This example uses the NestedParams and AutosaveAssociation plugins currently in development by Fingertips.
-No url yet.
+Example of nested forms with 2 level nesting.
 
-Rails is vendored using a Git submodule to this repository:
-http://github.com/alloy/complex-form-examples/tree/alloy-nested_params_merged_in_rails
+- We've extracted html chunks into javascript variables in the head to avoid repetition and double javascript escaping (escape_javascript).
+- Events work with delegate because it's easier when adding dynamic html parts.
+- Most of the javascript is extracted to application.js
+
+Rails is vendored using a Git submodule to official repository:
+git://github.com/rails/rails.git
+
+
+Try it out and send us feedback. Also sorry for model name under task (color) it was first thing that crossed our mind :-)
+Zoran and Marko
