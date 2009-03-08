@@ -1,13 +1,25 @@
+
+
 <div class="task">
   <p>
     <%= f.label :name, "Task:" %>
     <%= f.text_field :name %>
     
     <%= f.label :raise_exception, "Raise exception:" %>
-    <%= f.check_box :raise_exception %>
-    
-    <!-- Uses JS to hide this `task' and set a hidden_field with the name
-         `_delete' to "1" which causes the record to be deleted. -->
-    <%= remove_link_unless_new_record(f) %>
+    <%= f.check_box :raise_exception %>        
+    <%= remove_link_unless_new_record(f) -%>
   </p>
+  
+  <div class="colors">
+   <% @color = f.object.colors.empty? ? f.object.colors.build : f.object.colors  %>
+   <% f.fields_for :colors, @color do |color_form| %>
+      <%= render :partial => 'color', :locals => { :f => color_form } %>
+  <% end %>
+  </div>
+  <%= link_to 'Add a color', '#color', :class => "add_nested_item_lvl2", :rel => "[task][colors]" %>
+    
 </div>
+
+
+
+

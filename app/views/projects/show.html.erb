@@ -14,7 +14,7 @@
 
 <ul>
   <% @project.tasks.each do |task| %>
-    <li><%=h task.name %></li>
+    <li><%=h task.name %>: <%= task.colors.map(&:name).join(', ') %></li>
   <% end %>
 </ul>
 

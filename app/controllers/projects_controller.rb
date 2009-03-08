@@ -11,6 +11,9 @@ class ProjectsController < ApplicationController
     @project = Project.new
     @project.tasks.build
     @project.tags.build
+    
+    @project.tasks.each{|t| t.colors.build}
+    
   end
   
   def create
@@ -26,8 +29,9 @@ class ProjectsController < ApplicationController
   def edit
     @project = Project.find(params[:id])
     # add an extra new record for debugging purposes
-    @project.tasks.build
-    @project.tags.build
+    #@project.tasks.build
+    #@project.tags.build
+    #@project.tasks.each{|t| t.colors.build}
   end
   
   def update
