@@ -10,10 +10,10 @@ describe "On a ProjectsController, when updating", ActionController::TestCase do
     @project.tasks.create(:name => 'Try with our plugin')
     @tasks = @project.tasks
     
-    @valid_update_params = { :name => 'Dinner', :tasks_attributes => {
-      @tasks.first.id => { :name => "Buy food" },
-      @tasks.last.id  => { :name => "Cook" }
-    }}
+    @valid_update_params = { :name => 'Dinner', :tasks_attributes => [
+      { :id => @tasks.first.id, :name => "Buy food" },
+      { :id => @tasks.last.id,  :name => "Cook" }
+    ]}
   end
   
   it "should update the name of the author" do
@@ -30,7 +30,7 @@ describe "On a ProjectsController, when updating", ActionController::TestCase do
   end
   
   it "should destroy a missing task" do
-    @valid_update_params[:tasks_attributes][@tasks.first.id]['_delete'] = '1'
+    @valid_update_params[:tasks_attributes].first['_delete'] = '1'
     
     lambda {
       put :update, :id => @project.id, :project => @valid_update_params
@@ -38,7 +38,7 @@ describe "On a ProjectsController, when updating", ActionController::TestCase do
   end
   
   it "should add a new task" do
-    @valid_update_params[:tasks_attributes]['new_12345'] = { :name => 'Take out' }
+    @valid_update_params[:tasks_attributes] << { :name => 'Take out' }
     
     lambda {
       put :update, :id => @project.id, :project => @valid_update_params
@@ -46,7 +46,7 @@ describe "On a ProjectsController, when updating", ActionController::TestCase do
   end
   
   it "should reject any new task where the name is empty" do
-    @valid_update_params[:tasks_attributes]['new_12345'] = { 'name' => '', :due_at => nil }
+    @valid_update_params[:tasks_attributes] << { 'name' => '', :due_at => nil }
     
     lambda {
       put :update, :id => @project.id, :project => @valid_update_params
@@ -56,8 +56,8 @@ describe "On a ProjectsController, when updating", ActionController::TestCase do
   end
   
   it "should destroy a task and add a new one" do
-    @valid_update_params[:tasks_attributes][@tasks.first.id]['_delete'] = '1'
-    @valid_update_params[:tasks_attributes]['new_12345'] = { :name => 'Take out' }
+    @valid_update_params[:tasks_attributes].first['_delete'] = '1'
+    @valid_update_params[:tasks_attributes] << { :name => 'Take out' }
     
     lambda {
       put :update, :id => @project.id, :project => @valid_update_params
@@ -65,7 +65,11 @@ describe "On a ProjectsController, when updating", ActionController::TestCase do
   end
   
   it "should not be valid if a task is invalid" do
-    put :update, :id => @project.id, :project => { :name => 'Nothing', :tasks_attributes => { @tasks.first.id => { :name => '' }, @tasks.last.id => { :name => '' }}}
+    put :update, :id => @project.id, :project => { :name => 'Nothing', :tasks_attributes =>[
+      { :id => @tasks.first.id, :name => '' },
+      { :id => @tasks.last.id, :name => '' }
+    ]}
+    
     project = assigns(:project)
     
     project.should.not.be.valid
