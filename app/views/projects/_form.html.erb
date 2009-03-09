@@ -1,8 +1,44 @@
+<% javascript :defaults %>
+
 <%= error_messages_for :project %>
-<% form_for @project do |f| %>
+
+<% form_for @project do |project_form| -%>
+
   <p>
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
+    <%= project_form.label :name, "Project:" %>
+    <%= project_form.text_field :name %>
   </p>
-  <p><%= f.submit "Submit" %></p>
-<% end %>
+  
+  <p>
+    <% @project.build_author unless @project.author %>
+    <% project_form.fields_for :author do |author_form| %>
+      <%= author_form.label :name, "Author name:" %>
+      <%= author_form.text_field :name %>
+      
+      <%= author_form.label :raise_exception, "Raise exception:" %>
+      <%= author_form.check_box :raise_exception %>
+    <% end %>
+  </p>
+  
+  <div id="tasks">
+    <% project_form.fields_for :tasks do |task_form| %>
+      <%= render :partial => 'task', :locals => { :f => task_form } %>
+    <% end %>
+  </div>
+  <p>
+    <%= add_record_link project_form, :tasks, 'Add a task' %>
+  </p>
+  
+  <div id="tags">
+    <% project_form.fields_for :tags do |tag_form| %>
+      <%= render :partial => 'tag', :locals => { :f => tag_form } %>
+    <% end %>
+  </div>
+  <p>
+    <%= add_record_link project_form, :tags, 'Add a tag' %>
+  </p>
+  
+  <p>
+    <%= project_form.submit "Submit" %>
+  </p>
+<% end -%>

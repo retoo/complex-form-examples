@@ -1,6 +1,5 @@
-class Task < ActiveRecord::Base
-  belongs_to :project
-  validates_presence_of :name
+class Author < ActiveRecord::Base
+  has_many :projects
   
   attr_accessor :raise_exception
   

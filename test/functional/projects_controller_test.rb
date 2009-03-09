@@ -1,54 +1,77 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
-class ProjectsControllerTest < ActionController::TestCase
-  def test_index
-    get :index
-    assert_template 'index'
+describe "On a ProjectsController, when updating", ActionController::TestCase do
+  tests ProjectsController
+  
+  before do
+    @project = Project.create(:name => 'NestedParams')
+    @project.create_author(:name => 'Eloy')
+    @project.tasks.create(:name => 'Check other implementations')
+    @project.tasks.create(:name => 'Try with our plugin')
+    @tasks = @project.tasks
+    
+    @valid_update_params = { :name => 'Dinner', :tasks_attributes => {
+      @tasks.first.id => { :name => "Buy food" },
+      @tasks.last.id  => { :name => "Cook" }
+    }}
   end
   
-  def test_show
-    get :show, :id => Project.first
-    assert_template 'show'
+  it "should update the name of the author" do
+    put :update, :id => @project.id, :project => { :author_attributes => { :name => 'Mighty Mo' }}
+    @project.reload.author.name.should == 'Mighty Mo'
   end
   
-  def test_new
-    get :new
-    assert_template 'new'
+  it "should update attributes of the nested tasks" do
+    put :update, :id => @project.id, :project => @valid_update_params
+    @project.reload
+    
+    @project.name.should == 'Dinner'
+    @project.tasks.map(&:name).sort.should == ['Buy food', 'Cook']
   end
   
-  def test_create_invalid
-    Project.any_instance.stubs(:valid?).returns(false)
-    post :create
-    assert_template 'new'
+  it "should destroy a missing task" do
+    @valid_update_params[:tasks_attributes][@tasks.first.id]['_delete'] = '1'
+    
+    lambda {
+      put :update, :id => @project.id, :project => @valid_update_params
+    }.should.differ('Task.count', -1)
   end
   
-  def test_create_valid
-    Project.any_instance.stubs(:valid?).returns(true)
-    post :create
-    assert_redirected_to project_url(assigns(:project))
+  it "should add a new task" do
+    @valid_update_params[:tasks_attributes]['new_12345'] = { :name => 'Take out' }
+    
+    lambda {
+      put :update, :id => @project.id, :project => @valid_update_params
+    }.should.differ('Task.count', +1)
   end
   
-  def test_edit
-    get :edit, :id => Project.first
-    assert_template 'edit'
+  it "should reject any new task where the name is empty" do
+    @valid_update_params[:tasks_attributes]['new_12345'] = { 'name' => '', :due_at => nil }
+    
+    lambda {
+      put :update, :id => @project.id, :project => @valid_update_params
+    }.should.not.differ('Task.count')
+    
+    assigns(:project).should.be.valid
   end
   
-  def test_update_invalid
-    Project.any_instance.stubs(:valid?).returns(false)
-    put :update, :id => Project.first
-    assert_template 'edit'
+  it "should destroy a task and add a new one" do
+    @valid_update_params[:tasks_attributes][@tasks.first.id]['_delete'] = '1'
+    @valid_update_params[:tasks_attributes]['new_12345'] = { :name => 'Take out' }
+    
+    lambda {
+      put :update, :id => @project.id, :project => @valid_update_params
+    }.should.not.differ('Task.count')
   end
   
-  def test_update_valid
-    Project.any_instance.stubs(:valid?).returns(true)
-    put :update, :id => Project.first
-    assert_redirected_to project_url(assigns(:project))
-  end
-  
-  def test_destroy
-    project = Project.first
-    delete :destroy, :id => project
-    assert_redirected_to projects_url
-    assert !Project.exists?(project.id)
+  it "should not be valid if a task is invalid" do
+    put :update, :id => @project.id, :project => { :name => 'Nothing', :tasks_attributes => { @tasks.first.id => { :name => '' }, @tasks.last.id => { :name => '' }}}
+    project = assigns(:project)
+    
+    project.should.not.be.valid
+    project.errors.on(:tasks_name).should == "can't be blank"
+    
+    project.reload
+    project.name.should == 'NestedParams'
   end
 end

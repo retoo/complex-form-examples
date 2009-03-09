@@ -1,0 +1,15 @@
+<div class="tag">
+  <p>
+    <%= f.label :name, "Tag:" %>
+    <%= f.text_field :name %>
+    
+    <%= f.label :raise_exception, "Raise exception:" %>
+    <%= f.check_box :raise_exception %>
+    
+    <% unless f.object.new_record? %>
+      <!-- For existing records we add a checkbox to be able to delete records. -->
+      <%= f.label :_delete, "Remove:" %>
+      <%= f.check_box :_delete %>
+    <% end %>
+  </p>
+</div>

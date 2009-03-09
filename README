@@ -1,14 +1,8 @@
 Complex Form Examples
 ---------------------
 
-Several different ways to handle the multi-model form problem with a 
-one-to-many association. The various approaches are in git branches.
-See them for examples.
+This example uses the NestedParams and AutosaveAssociation plugins currently in development by Fingertips.
+No url yet.
 
-Once you clone the repository, you can checkout a remote branch.
-
-  git checkout -b ddollar-accessible origin/ddollar-accessible
-
-Some branches may require you to update submodules.
-
-  git submodule update --init
+Rails is vendored using a Git submodule to this repository:
+http://github.com/alloy/complex-form-examples/tree/alloy-nested_params_merged_in_rails

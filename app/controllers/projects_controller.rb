@@ -9,6 +9,8 @@ class ProjectsController < ApplicationController
   
   def new
     @project = Project.new
+    @project.tasks.build
+    @project.tags.build
   end
   
   def create
@@ -23,11 +25,15 @@ class ProjectsController < ApplicationController
   
   def edit
     @project = Project.find(params[:id])
+    # add an extra new record for debugging purposes
+    @project.tasks.build
+    @project.tags.build
   end
   
   def update
     @project = Project.find(params[:id])
-    if @project.update_attributes(params[:project])
+    @project.attributes = params[:project]
+    if @project.save
       flash[:notice] = "Successfully updated project."
       redirect_to @project
     else

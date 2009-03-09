@@ -1,6 +1,5 @@
-class Task < ActiveRecord::Base
-  belongs_to :project
-  validates_presence_of :name
+class Tag < ActiveRecord::Base
+  validates_presence_of :name, :message => "can't just be blank"
   
   attr_accessor :raise_exception
   
