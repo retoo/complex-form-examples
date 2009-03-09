@@ -9,7 +9,3 @@ Example of nested forms with 2 level nesting.
 
 Rails is vendored using a Git submodule to official repository:
 git://github.com/rails/rails.git
-
-
-Try it out and send us feedback. Also sorry for model name under task (color) it was first thing that crossed our mind :-)
-Zoran and Marko
