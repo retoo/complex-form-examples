@@ -1,11 +1,8 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
-timestamp = function(){
-  return new Date().getTime()
-}
-
 replace_ids = function(s){
-  return s.replace(/NEW_RECORD/g, timestamp )
+  var new_id = new Date().getTime();
+  return s.replace(/NEW_RECORD/g, timestamp);
 }
 
 var myrules = {
@@ -42,12 +39,6 @@ var myrules = {
   }
 };
 
-
 Event.observe(window, 'load', function(){
-  $('container').delegate('click', myrules); 
-  
-  
-})
-
-
-
+  $('container').delegate('click', myrules);
+});
