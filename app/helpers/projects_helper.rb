@@ -35,7 +35,7 @@ module ProjectsHelper
 
 
   def generate_template(form_builder, method, options = {})
-    escape_javascript generate_html(form_builder, method, options = {})
+    escape_javascript generate_html(form_builder, method, options)
   end
 
 
